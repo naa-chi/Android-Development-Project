@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">Junta Zaror</string>
+    <string name="appTitle">Junta Vecinos App</string>
+    <string name="selectRole">Seleccione su Rol.</string>
+
+    <string name="roleDirective">Soy un miembro\nde la Directiva.</string>
+    <string name="roleNeighbor">Soy un Vecino.</string>
+
+    <string name="neighborLogin">Inicio de Sesión Vecino:</string>
+    <string name="neighborCode">Su código de Vecino.</string>
+    <string name="loggingAsNeighbor">Iniciando sesión como Vecino.</string>
+
+    <string name="directiveLogin">Incio de Sesión Directiva</string>
+    <string name="directiveMasterCode">Inicie su código de activación:</string>
+    <string name="directiveActivationCode">Código de Activación.</string>
+    <string name="directiveOtherwise">O en su lugar...</string>
+    <string name="directiveLoginAsMemberOfDirective">Inicie sesión con un\ncódigo de directiva:</string>
+    <string name="directiveDirectiveCode">Su código personal de Directiva.</string>
+    <string name="backButton">Atrás</string>
+    <string name="menuButton">Menú</string>
+    <string name="accountButton">Cuenta</string>
 </resources>
