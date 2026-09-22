@@ -1,0 +1,7 @@
+Add QR code for each neighbor login which launches an app
+
+add a cost for requesting a time period?
+
+Cambiar codigo de vecino por RUT o Email.
+
+3 roles, usuario, gestion sobre datos (alcalde o presidente junta) y el operador de sistemas (ingresa todos los datos, no tiene accceso a gestion)

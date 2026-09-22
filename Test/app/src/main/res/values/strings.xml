@@ -3,6 +3,7 @@
     <string name="appTitle">Junta Vecinos App</string>
     <string name="selectRole">Seleccione su Rol.</string>
 
+    <string name="loadHandle">Cargando su perfil</string>
     <string name="roleDirective">Soy un miembro\nde la Directiva.</string>
     <string name="roleNeighbor">Soy un Vecino.</string>
 
