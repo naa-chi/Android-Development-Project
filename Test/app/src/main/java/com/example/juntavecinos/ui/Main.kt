@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.juntavecinos.Model.AccountType
 import com.example.juntavecinos.R
 import com.example.juntavecinos.ui.theme.JuntaVecinosTheme
 
@@ -30,7 +31,7 @@ fun Main(
     val backStackEntry by navController.currentBackStackEntryAsState()
 
     //Start with any route tbh, changing this won't change anything
-    val currentRoute = backStackEntry?.destination?.route ?: Navigation.LoginStarter.name
+    val currentRoute = backStackEntry?.destination?.route ?: Navigation.LoadingHandler.name
     val currentScreen = Navigation.valueOf(currentRoute)
 
     Scaffold(
@@ -47,12 +48,16 @@ fun Main(
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Navigation.LoginStarter.name,
+            startDestination = Navigation.LoadingHandler.name,
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(route = Navigation.LoadingHandler.name) {
                 LoadingHandler(
-                    onLoggedIn = {},
+                    onLoggedIn = { a ->
+                        if (a == AccountType.Admin) {
+
+                        }
+                    },
                     onNotLoggedIn = {
                         navController.navigate(Navigation.LoginStarter.name) {
                             launchSingleTop = true
@@ -77,10 +82,12 @@ fun Main(
             }
 
             composable(route = Navigation.NeighborLogin.name) {
+                println("hello im your neighbor")
                 NeighborLogin()
             }
 
             composable(route = Navigation.DirectiveLogin.name) {
+                println("goodbye see you later")
                 DirectiveLogin()
             }
         }
