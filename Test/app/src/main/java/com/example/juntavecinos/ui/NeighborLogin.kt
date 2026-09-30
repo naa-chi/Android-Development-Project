@@ -3,8 +3,10 @@ package com.example.juntavecinos.ui
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -14,8 +16,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.juntavecinos.R
 import com.example.juntavecinos.ui.theme.Blue4
 import com.example.juntavecinos.ui.theme.JuntaVecinosTheme
@@ -31,17 +36,23 @@ fun NeighborLogin(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(
-            stringResource(R.string.loggingAsNeighbor),
-            color = Blue4,
-            style = MaterialTheme.typography.titleLarge
+        Spacer(modifier = Modifier.weight(1f))
+        BasicText(
+            text = stringResource(R.string.loggingAsNeighbor),
+            style = TextStyle(
+                fontSize = 22.sp,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onBackground
+            ),
         )
+        Spacer(modifier = Modifier.weight(0.1f))
         OutlinedTextField(
             state = rememberTextFieldState(),
             label = {
                 Text(stringResource(R.string.neighborCode))
             }
         )
+        Spacer(modifier = Modifier.weight(1f))
     }
 }
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

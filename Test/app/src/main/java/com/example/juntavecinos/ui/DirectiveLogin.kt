@@ -5,8 +5,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -16,9 +18,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.juntavecinos.R
 import com.example.juntavecinos.ui.theme.Blue4
 import com.example.juntavecinos.ui.theme.JuntaVecinosTheme
@@ -33,38 +37,53 @@ fun DirectiveLogin(
             .fillMaxSize()
             .padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
     ) {
-        Text(
-            stringResource(R.string.directiveMasterCode),
-            color = Blue4,
-            style = MaterialTheme.typography.titleLarge
+        Spacer(Modifier.weight(1f))
+        BasicText(
+            text = stringResource(R.string.directiveMasterCode),
+            style = TextStyle(
+                fontSize = 22.sp,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onBackground
+            ),
         )
         OutlinedTextField(
             state = rememberTextFieldState(),
             label = {
                 Text(stringResource(R.string.directiveActivationCode))
-            }
+            },
+            modifier = Modifier.fillMaxWidth()
         )
-        Spacer(Modifier.height(60.dp))
-        Text(
-            stringResource(R.string.directiveOtherwise),
-            color = Blue4,
-            style = MaterialTheme.typography.titleLarge
+
+        Spacer(Modifier.weight(.1f))
+
+        BasicText(
+            text = stringResource(R.string.directiveOtherwise),
+            style = TextStyle(
+                fontSize = 18.sp,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onBackground
+            ),
         )
-        Spacer(Modifier.height(60.dp))
-        Text(
-            stringResource(R.string.directiveLoginAsMemberOfDirective),
-            color = Blue4,
-            style = MaterialTheme.typography.titleLarge,
-            textAlign = TextAlign.Center
+
+
+        Spacer(Modifier.weight(.1f))
+        BasicText(
+            text = stringResource(R.string.directiveLoginAsMemberOfDirective),
+            style = TextStyle(
+                fontSize = 22.sp,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onBackground
+            ),
         )
         OutlinedTextField(
             state = rememberTextFieldState(),
             label = {
                 Text(stringResource(R.string.directiveDirectiveCode))
             },
+            modifier = Modifier.fillMaxWidth()
         )
+        Spacer(Modifier.weight(1f))
     }
 }
 

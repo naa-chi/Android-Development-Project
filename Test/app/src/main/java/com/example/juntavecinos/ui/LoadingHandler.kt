@@ -15,5 +15,6 @@ fun LoadingHandler(
     // FOR NOW WE ONLY MOVE THE USER TO NOT LOGGED IN
     // cuz... there's no logged in logic yet, yay!
 
-    onLoggedIn(AccountType.Neighbor)
+    //onLoggedIn(AccountType.Neighbor)
+    onNotLoggedIn()
 }

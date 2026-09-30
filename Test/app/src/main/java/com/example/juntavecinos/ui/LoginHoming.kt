@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -17,11 +19,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.juntavecinos.R
 import com.example.juntavecinos.ui.theme.JuntaVecinosTheme
 
@@ -39,15 +44,19 @@ fun LoginHoming(
             .fillMaxSize()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
     ) {
-        Text(
+        Spacer(modifier = Modifier.weight(1f))
+
+        BasicText(
             text = stringResource(R.string.selectRole),
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onBackground
+            style = TextStyle(
+                fontSize = 32.sp,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onBackground
+            ),
         )
 
-        Spacer(modifier = Modifier.height(50.dp))
+        Spacer(modifier = Modifier.weight(0.15f))
 
         Row(
             horizontalArrangement = Arrangement.spacedBy(20.dp),
@@ -60,10 +69,14 @@ fun LoginHoming(
                     .height(60.dp)
                     .weight(1f)
             ) {
-                Text(
+                BasicText(
                     text = stringResource(R.string.roleDirective),
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.titleMedium
+                    style = TextStyle(
+                        fontSize = 12.sp,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.surface
+                    ),
+                    autoSize = TextAutoSize.StepBased(),
                 )
             }
 
@@ -74,13 +87,19 @@ fun LoginHoming(
                     .height(60.dp)
                     .weight(1f)
             ) {
-                Text(
+                BasicText(
                     text = stringResource(R.string.roleNeighbor),
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.titleMedium
+                    style = TextStyle(
+                        fontSize = 12.sp,
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.surface
+                    ),
+                    autoSize = TextAutoSize.StepBased(),
                 )
             }
         }
+
+        Spacer(modifier = Modifier.weight(1.1f))
     }
 }
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
