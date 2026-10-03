@@ -1,4 +1,4 @@
-wpackage com.example.juntavecinos.ui
+package com.example.juntavecinos.ui
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
