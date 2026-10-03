@@ -24,6 +24,8 @@
     <string name="neighborMoney">Registro de gastos</string>
     <string name="neighborCalendar">Solicitar arriendo</string>
     <string name="neighborProfile">Cuenta</string>
+    <string name="neighborLastUpdatedMoney">Ultima Actualización: </string>
+    <string name="refresh">Refrescar</string>
     //Bottom bar options
     <string name="bottombarnavMoney">Resumen</string>
     <string name="bottombarnavCalendar">Solicitar</string>
