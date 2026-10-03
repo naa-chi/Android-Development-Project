@@ -2,10 +2,12 @@ package com.example.juntavecinos.ui
 
 import androidx.compose.runtime.Composable
 import com.example.juntavecinos.Model.AccountType
+import androidx.navigation.NavHostController
 
 @Composable
 fun LoadingHandler(
-    onLoggedIn : (a : AccountType) -> Unit, onNotLoggedIn : () -> Unit
+    onLoggedIn : (a : AccountType) -> Unit,
+    onNotLoggedIn : () -> Unit
 
 ){
     //This function will simply check if we're logged in.

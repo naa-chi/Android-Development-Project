@@ -1,4 +1,4 @@
-package com.example.juntavecinos.ui
+package com.example.juntavecinos.ui.Login
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
@@ -22,7 +22,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.juntavecinos.R
-import com.example.juntavecinos.ui.theme.Blue4
+import com.example.juntavecinos.ui.Navigation
+import com.example.juntavecinos.ui.System.JuntaTopbar
 import com.example.juntavecinos.ui.theme.JuntaVecinosTheme
 
 @Composable

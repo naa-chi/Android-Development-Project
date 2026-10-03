@@ -14,6 +14,10 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.juntavecinos.Model.AccountType
 import com.example.juntavecinos.R
+import com.example.juntavecinos.ui.Login.DirectiveLogin
+import com.example.juntavecinos.ui.Login.LoginHoming
+import com.example.juntavecinos.ui.Login.NeighborLogin
+import com.example.juntavecinos.ui.System.JuntaTopbar
 import com.example.juntavecinos.ui.theme.JuntaVecinosTheme
 
 
@@ -69,7 +73,7 @@ fun Main(
             composable(route = Navigation.LoginStarter.name) {
                 LoginHoming(
                     onNavigateToNeighbor = {
-                        navController.navigate(Navigation.NeighborLogin.name){
+                        navController.navigate(Navigation.NeighborLogin.name) {
                             launchSingleTop = true
                         }
                     },

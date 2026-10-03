@@ -1,12 +1,10 @@
-package com.example.juntavecinos.ui
+package com.example.juntavecinos.ui.Login
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.input.rememberTextFieldState
@@ -24,7 +22,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.juntavecinos.R
-import com.example.juntavecinos.ui.theme.Blue4
+import com.example.juntavecinos.ui.System.JuntaTopbar
+import com.example.juntavecinos.ui.Navigation
 import com.example.juntavecinos.ui.theme.JuntaVecinosTheme
 
 

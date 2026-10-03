@@ -8,7 +8,7 @@
     <string name="roleNeighbor">Soy un Vecino.</string>
 
     <string name="neighborLogin">Inicio de Sesión Vecino:</string>
-    <string name="neighborCode">Su código de Vecino.</string>
+    <string name="neighborCode">Ingrese su RUT</string>
     <string name="loggingAsNeighbor">Iniciando sesión como Vecino.</string>
 
     <string name="directiveLogin">Incio de Sesión Directiva</string>
@@ -20,4 +20,9 @@
     <string name="backButton">Atrás</string>
     <string name="menuButton">Menú</string>
     <string name="accountButton">Cuenta</string>
+
+    //Bottom bar options
+    <string name="bottombarnavMoney">Resumen</string>
+    <string name="bottombarnavCalendar">Solicitar</string>
+    <string name="bottombarnavProfile">Cuenta</string>
 </resources>
