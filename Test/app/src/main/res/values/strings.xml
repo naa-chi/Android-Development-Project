@@ -21,6 +21,9 @@
     <string name="menuButton">Menú</string>
     <string name="accountButton">Cuenta</string>
 
+    <string name="neighborMoney">Registro de gastos</string>
+    <string name="neighborCalendar">Solicitar arriendo</string>
+    <string name="neighborProfile">Cuenta</string>
     //Bottom bar options
     <string name="bottombarnavMoney">Resumen</string>
     <string name="bottombarnavCalendar">Solicitar</string>

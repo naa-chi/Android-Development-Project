@@ -3,10 +3,12 @@ package com.example.juntavecinos.ui
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,15 +19,20 @@ import com.example.juntavecinos.R
 import com.example.juntavecinos.ui.Login.DirectiveLogin
 import com.example.juntavecinos.ui.Login.LoginHoming
 import com.example.juntavecinos.ui.Login.NeighborLogin
+import com.example.juntavecinos.ui.Neighbor.NeighborBottomBar
+import com.example.juntavecinos.ui.Neighbor.NeighborMoneyReport
+import com.example.juntavecinos.ui.Neighbor.NeighborNavigation
 import com.example.juntavecinos.ui.System.JuntaTopbar
 import com.example.juntavecinos.ui.theme.JuntaVecinosTheme
-
 
 enum class Navigation(val title: Int) {
     LoadingHandler(title = R.string.loadHandle),
     LoginStarter(title = R.string.appTitle),
     NeighborLogin(title = R.string.neighborLogin),
-    DirectiveLogin(title = R.string.directiveLogin)
+    DirectiveLogin(title = R.string.directiveLogin),
+    NeighborMoney(title = R.string.neighborMoney),
+    NeighborCalendar(title = R.string.neighborCalendar),
+    NeighborProfile(title = R.string.neighborProfile)
 }
 
 @Composable
@@ -33,21 +40,88 @@ fun Main(
     navController: NavHostController = rememberNavController()
 ) {
     val backStackEntry by navController.currentBackStackEntryAsState()
-
-    //Start with any route tbh, changing this won't change anything
     val currentRoute = backStackEntry?.destination?.route ?: Navigation.LoadingHandler.name
     val currentScreen = Navigation.valueOf(currentRoute)
+
+    val navigateToNeighborTab: (NeighborNavigation) -> Unit = { target ->
+        val targetRoute = when (target) {
+            NeighborNavigation.Money -> Navigation.NeighborMoney.name
+            NeighborNavigation.Calendar -> Navigation.NeighborCalendar.name
+            NeighborNavigation.Profile -> Navigation.NeighborProfile.name
+        }
+        navController.navigate(targetRoute) {
+            popUpTo(navController.graph.findStartDestination().id) {
+                saveState = true
+            }
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            //Start our topbar
             JuntaTopbar(
                 currentScreen = currentScreen,
                 loggedIn = false,
                 canNavigateBack = navController.previousBackStackEntry != null,
                 navigateUp = { navController.navigateUp() }
             )
+        },
+        bottomBar = {
+            when (currentRoute) {
+                Navigation.NeighborMoney.name -> NeighborBottomBar(
+                    NeighborNavigation.Money,
+                    {selected ->
+                        if (selected == NeighborNavigation.Calendar){
+                            navController.navigate(Navigation.NeighborCalendar.name) {
+                                popUpTo(currentRoute) { inclusive =true }
+                                launchSingleTop = true
+                            }
+                        } else if (selected == NeighborNavigation.Profile){
+                            navController.navigate(Navigation.NeighborProfile.name) {
+                                popUpTo(currentRoute) { inclusive =true }
+                                launchSingleTop = true
+                            }
+                        }
+                    }
+                )
+
+                Navigation.NeighborCalendar.name -> NeighborBottomBar(
+                    NeighborNavigation.Calendar,
+                    {selected ->
+                        if (selected == NeighborNavigation.Money){
+                            navController.navigate(Navigation.NeighborMoney.name) {
+                                popUpTo(currentRoute) { inclusive =true }
+                                launchSingleTop = true
+                            }
+                        } else if (selected == NeighborNavigation.Profile){
+                            navController.navigate(Navigation.NeighborProfile.name) {
+                                popUpTo(currentRoute) { inclusive =true }
+                                launchSingleTop = true
+                            }
+                        }
+                    }
+                )
+
+                Navigation.NeighborProfile.name -> NeighborBottomBar(
+                    NeighborNavigation.Profile,
+                    {selected ->
+                        if (selected == NeighborNavigation.Money){
+                            navController.navigate(Navigation.NeighborMoney.name) {
+                                popUpTo(currentRoute) { inclusive =true }
+                                launchSingleTop = true
+                            }
+                        } else if (selected == NeighborNavigation.Calendar){
+                            navController.navigate(Navigation.NeighborCalendar.name) {
+                                popUpTo(currentRoute) { inclusive =true }
+                                launchSingleTop = true
+                            }
+                        }
+                    }
+                )
+
+            }
         }
     ) { innerPadding ->
         NavHost(
@@ -57,13 +131,19 @@ fun Main(
         ) {
             composable(route = Navigation.LoadingHandler.name) {
                 LoadingHandler(
-                    onLoggedIn = { a ->
-                        if (a == AccountType.Admin) {
-
+                    onLoggedIn = { accountType ->
+                        if (accountType == AccountType.ADMIN) {
+                            // Directive route
+                        } else if (accountType == AccountType.NEIGHBOR) {
+                            navController.navigate(Navigation.NeighborMoney.name) {
+                                popUpTo(currentRoute) { inclusive =true }
+                                launchSingleTop = true
+                            }
                         }
                     },
                     onNotLoggedIn = {
                         navController.navigate(Navigation.LoginStarter.name) {
+                            popUpTo(currentRoute) { inclusive = true }
                             launchSingleTop = true
                         }
                     }
@@ -86,13 +166,23 @@ fun Main(
             }
 
             composable(route = Navigation.NeighborLogin.name) {
-                println("hello im your neighbor")
                 NeighborLogin()
             }
 
             composable(route = Navigation.DirectiveLogin.name) {
-                println("goodbye see you later")
                 DirectiveLogin()
+            }
+
+            composable(route = Navigation.NeighborMoney.name) {
+                NeighborMoneyReport()
+            }
+
+            composable(route = Navigation.NeighborCalendar.name) {
+
+            }
+
+            composable(route = Navigation.NeighborProfile.name) {
+
             }
         }
     }
@@ -100,8 +190,8 @@ fun Main(
 
 @Preview(showBackground = true)
 @Composable
-fun MainPreview(){
-    JuntaVecinosTheme() {
+fun MainPreview() {
+    JuntaVecinosTheme {
         Main()
     }
 }
