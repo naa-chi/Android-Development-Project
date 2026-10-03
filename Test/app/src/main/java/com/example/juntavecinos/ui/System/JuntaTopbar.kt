@@ -42,7 +42,7 @@ fun JuntaTopbar (
                     style = TextStyle(
                         fontSize = 25.sp,
                         textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.surface
+                        color = MaterialTheme.colorScheme.onPrimary
                     ),
                 )
             },

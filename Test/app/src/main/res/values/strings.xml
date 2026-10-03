@@ -26,6 +26,18 @@
     <string name="neighborProfile">Cuenta</string>
     <string name="neighborLastUpdatedMoney">Ultima Actualización: </string>
     <string name="refresh">Refrescar</string>
+    <string name="previousMonth">Mes Anterior</string>
+    <string name="nextMonth">Siguiente Mes</string>
+    <string name="expensesResume">Resumen de gastos del mes de </string>
+    <string name="moneyLost">Gastos:</string>
+    <string name="moneyGained">Ingresos:</string>
+    <string name="totalBudget">Fondos Totales:</string>
+    <string name="openDetailedExpenses">Detalles de gastos</string>
+    <string name="neighborExpensesDetailed">Gastos del mes de</string>
+
+    <string name="dayFree">Dia Libre</string>
+    <string name="dayAvailable">Dia con algunos horarios disponibles</string>
+    <string name="dayBusy">Dia no disponible</string>
     //Bottom bar options
     <string name="bottombarnavMoney">Resumen</string>
     <string name="bottombarnavCalendar">Solicitar</string>
