@@ -52,7 +52,7 @@ fun NeighborBottomBar(
                 },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = MaterialTheme.colorScheme.onBackground,
-                    unselectedIconColor = MaterialTheme.colorScheme.surface
+                    unselectedIconColor = MaterialTheme.colorScheme.onPrimary
                 ),
                 label = {
                     BasicText(
@@ -60,7 +60,7 @@ fun NeighborBottomBar(
                         style = TextStyle(
                             fontSize = 15.sp,
                             textAlign = TextAlign.Center,
-                            color = MaterialTheme.colorScheme.surface
+                            color = MaterialTheme.colorScheme.onPrimary
                         )
                     )
                 }

@@ -1,5 +1,7 @@
 package com.example.juntavecinos.ui
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -7,6 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -20,6 +23,8 @@ import com.example.juntavecinos.ui.Login.DirectiveLogin
 import com.example.juntavecinos.ui.Login.LoginHoming
 import com.example.juntavecinos.ui.Login.NeighborLogin
 import com.example.juntavecinos.ui.Neighbor.NeighborBottomBar
+import com.example.juntavecinos.ui.Neighbor.NeighborCalendar
+import com.example.juntavecinos.ui.Neighbor.NeighborDetailedExpenses
 import com.example.juntavecinos.ui.Neighbor.NeighborMoneyReport
 import com.example.juntavecinos.ui.Neighbor.NeighborNavigation
 import com.example.juntavecinos.ui.System.JuntaTopbar
@@ -32,9 +37,11 @@ enum class Navigation(val title: Int) {
     DirectiveLogin(title = R.string.directiveLogin),
     NeighborMoney(title = R.string.neighborMoney),
     NeighborCalendar(title = R.string.neighborCalendar),
-    NeighborProfile(title = R.string.neighborProfile)
+    NeighborProfile(title = R.string.neighborProfile),
+    NeighborDetailedExpenses(title = R.string.openDetailedExpenses)
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Main(
     navController: NavHostController = rememberNavController()
@@ -42,21 +49,6 @@ fun Main(
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route ?: Navigation.LoadingHandler.name
     val currentScreen = Navigation.valueOf(currentRoute)
-
-    val navigateToNeighborTab: (NeighborNavigation) -> Unit = { target ->
-        val targetRoute = when (target) {
-            NeighborNavigation.Money -> Navigation.NeighborMoney.name
-            NeighborNavigation.Calendar -> Navigation.NeighborCalendar.name
-            NeighborNavigation.Profile -> Navigation.NeighborProfile.name
-        }
-        navController.navigate(targetRoute) {
-            popUpTo(navController.graph.findStartDestination().id) {
-                saveState = true
-            }
-            launchSingleTop = true
-            restoreState = true
-        }
-    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -173,12 +165,22 @@ fun Main(
                 DirectiveLogin()
             }
 
+            composable(route = Navigation.NeighborDetailedExpenses.name){
+                NeighborDetailedExpenses()
+            }
+
             composable(route = Navigation.NeighborMoney.name) {
-                NeighborMoneyReport()
+                NeighborMoneyReport({
+                    navController.navigate(Navigation.NeighborDetailedExpenses.name) {
+                        launchSingleTop = true
+                    }
+                })
             }
 
             composable(route = Navigation.NeighborCalendar.name) {
+                NeighborCalendar({ date ->
 
+                })
             }
 
             composable(route = Navigation.NeighborProfile.name) {
@@ -188,6 +190,7 @@ fun Main(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun MainPreview() {
