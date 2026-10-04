@@ -36,8 +36,10 @@ data class Event(
     val id: Int = 0,
     val title: String,
     val description: String,
-    val scheduledByUserName: String,
-    val scheduledDate: String,
+    val scheduledByUserEmail: String,
+    val scheduledStartDate: Date,
+    val scheduledEndDate: Date,
     val eventType: EventType,
-    val location: String
+    val location: String,
+    val price: Double
 )
