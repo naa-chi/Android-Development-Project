@@ -1,5 +1,5 @@
 package com.example.juntavecinos.Model
-
+import java.time.LocalDateTime
 enum class AccountType {
     ADMIN,
     TREASURER,
@@ -37,8 +37,8 @@ data class Event(
     val title: String,
     val description: String,
     val scheduledByUserEmail: String,
-    val scheduledStartDate: Date,
-    val scheduledEndDate: Date,
+    val scheduledStartDate: LocalDateTime,
+    val scheduledEndDate: LocalDateTime,
     val eventType: EventType,
     val location: String,
     val price: Double

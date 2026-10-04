@@ -36,10 +36,9 @@ import com.example.juntavecinos.ui.theme.JuntaVecinosTheme
 fun LoginHoming(
     onNavigateToNeighbor: () -> Unit,
     onNavigateToDirective: () -> Unit,
-    modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -73,7 +72,7 @@ fun LoginHoming(
                     style = TextStyle(
                         fontSize = 12.sp,
                         textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.surface
+                        color = MaterialTheme.colorScheme.onPrimary
                     ),
                     autoSize = TextAutoSize.StepBased(),
                 )
@@ -91,7 +90,7 @@ fun LoginHoming(
                     style = TextStyle(
                         fontSize = 12.sp,
                         textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.surface
+                        color = MaterialTheme.colorScheme.onPrimary
                     ),
                     autoSize = TextAutoSize.StepBased(),
                 )
@@ -106,10 +105,6 @@ fun LoginHoming(
 @Composable
 fun LoginPreview(){
     JuntaVecinosTheme() {
-        Scaffold() {innerPadding ->
-            JuntaTopbar(Navigation.LoginStarter, false, false, { })
-            LoginHoming({}, {})
-
-        }
+        LoginHoming({}, {})
     }
 }

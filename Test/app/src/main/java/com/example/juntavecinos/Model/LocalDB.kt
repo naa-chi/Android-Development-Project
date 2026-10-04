@@ -5,13 +5,17 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.os.Build
+import androidx.annotation.RequiresApi
 
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import kotlin.random.Random
-
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
 private const val DATABASE_NAME = "neighborhoods.db"
 private const val DATABASE_VERSION = 3
 
@@ -262,6 +266,7 @@ class DBHelper private constructor(context: Context) :
         else Result.failure(Exception("DB insert error"))
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun getAllEvents(): List<Event> {
         val events = mutableListOf<Event>()
         readableDatabase.query(
@@ -269,7 +274,7 @@ class DBHelper private constructor(context: Context) :
             null, null, null, null, null,
 
             /*
-            * Yeah i doon't know, i have no way of testing this code properly
+            * Yeah, I don't know, I have no way of testing this code properly
             * since it's a db that it's creating and subsequently populating,
             * but I don't know how to test this yet since we don't really
             * HAVE a way to get to this point on the application yet so in
@@ -374,14 +379,25 @@ class DBHelper private constructor(context: Context) :
 
 }
 
-fun Cursor.toEvent(): Event = Event(
-    id = getInt(getColumnIndexOrThrow(DBHelper.COL_EVENT_ID)),
-    title = getString(getColumnIndexOrThrow(DBHelper.COL_EVENT_TITLE)),
-    description = getString(getColumnIndexOrThrow(DBHelper.COL_EVENT_DESCRIPTION)),
-    scheduledByUserEmail = getString(getColumnIndexOrThrow(DBHelper.COL_EVENT_SCHEDULED_BY_USER_EMAIL)),
-    scheduledStartDate = Date(getLong(getColumnIndexOrThrow(DBHelper.COL_EVENT_SCHEDULED_START_DATE))),
-    scheduledEndDate = Date(getLong(getColumnIndexOrThrow(DBHelper.COL_EVENT_SCHEDULED_END_DATE))),
-    eventType = EventType.valueOf(getString(getColumnIndexOrThrow(DBHelper.COL_EVENT_TYPE))),
-    location = getString(getColumnIndexOrThrow(DBHelper.COL_EVENT_LOCATION)),
-    price = getDouble(getColumnIndexOrThrow(DBHelper.COL_EVENT_PRICE))
-)
+@RequiresApi(Build.VERSION_CODES.O)
+fun Cursor.toEvent(): Event {
+    val zoneId = ZoneId.systemDefault()
+
+    return Event(
+        id = getInt(getColumnIndexOrThrow(DBHelper.COL_EVENT_ID)),
+        title = getString(getColumnIndexOrThrow(DBHelper.COL_EVENT_TITLE)),
+        description = getString(getColumnIndexOrThrow(DBHelper.COL_EVENT_DESCRIPTION)),
+        scheduledByUserEmail = getString(getColumnIndexOrThrow(DBHelper.COL_EVENT_SCHEDULED_BY_USER_EMAIL)),
+        scheduledStartDate = LocalDateTime.ofInstant(
+            Instant.ofEpochMilli(getLong(getColumnIndexOrThrow(DBHelper.COL_EVENT_SCHEDULED_START_DATE))),
+            zoneId
+        ),
+        scheduledEndDate = LocalDateTime.ofInstant(
+            Instant.ofEpochMilli(getLong(getColumnIndexOrThrow(DBHelper.COL_EVENT_SCHEDULED_END_DATE))),
+            zoneId
+        ),
+        eventType = EventType.valueOf(getString(getColumnIndexOrThrow(DBHelper.COL_EVENT_TYPE))),
+        location = getString(getColumnIndexOrThrow(DBHelper.COL_EVENT_LOCATION)),
+        price = getDouble(getColumnIndexOrThrow(DBHelper.COL_EVENT_PRICE))
+    )
+}

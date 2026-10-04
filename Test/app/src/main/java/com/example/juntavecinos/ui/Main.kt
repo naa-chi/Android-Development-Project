@@ -2,6 +2,8 @@ package com.example.juntavecinos.ui
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -125,7 +127,7 @@ fun Main(
                 LoadingHandler(
                     onLoggedIn = { accountType ->
                         if (accountType == AccountType.ADMIN) {
-                            // Directive route
+
                         } else if (accountType == AccountType.NEIGHBOR) {
                             navController.navigate(Navigation.NeighborMoney.name) {
                                 popUpTo(currentRoute) { inclusive =true }
@@ -158,11 +160,20 @@ fun Main(
             }
 
             composable(route = Navigation.NeighborLogin.name) {
-                NeighborLogin()
+                NeighborLogin({ ssn ->
+                    navController.navigate(Navigation.NeighborMoney.name) {
+                        //Delete all history
+                        popUpTo(navController.graph.id) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                })
             }
-
             composable(route = Navigation.DirectiveLogin.name) {
-                DirectiveLogin()
+                DirectiveLogin(
+                    {isAdmin, code -> }
+                )
             }
 
             composable(route = Navigation.NeighborDetailedExpenses.name){
