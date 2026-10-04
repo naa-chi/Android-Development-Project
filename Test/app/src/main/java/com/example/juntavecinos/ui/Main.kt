@@ -50,21 +50,6 @@ fun Main(
     val currentRoute = backStackEntry?.destination?.route ?: Navigation.LoadingHandler.name
     val currentScreen = Navigation.valueOf(currentRoute)
 
-    val navigateToNeighborTab: (NeighborNavigation) -> Unit = { target ->
-        val targetRoute = when (target) {
-            NeighborNavigation.Money -> Navigation.NeighborMoney.name
-            NeighborNavigation.Calendar -> Navigation.NeighborCalendar.name
-            NeighborNavigation.Profile -> Navigation.NeighborProfile.name
-        }
-        navController.navigate(targetRoute) {
-            popUpTo(navController.graph.findStartDestination().id) {
-                saveState = true
-            }
-            launchSingleTop = true
-            restoreState = true
-        }
-    }
-
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {

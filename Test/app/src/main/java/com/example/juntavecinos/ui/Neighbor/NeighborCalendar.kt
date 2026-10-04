@@ -2,6 +2,7 @@ package com.example.juntavecinos.ui.Neighbor
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -37,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import com.example.juntavecinos.ui.theme.*
 import androidx.compose.ui.res.stringResource
@@ -173,15 +175,20 @@ fun NeighborCalendar(
                         DayEventType.ReservedAvailable -> Color.White
                         DayEventType.ReservedFull -> Color.White
                     }
-
+                    val shape = RoundedCornerShape(8.dp)
                     Box(
                         modifier = Modifier
                             .aspectRatio(1f)
-                            .clip(RoundedCornerShape(8.dp))
+                            .clip(shape)
                             .background(buttonColor)
                             .clickable {
                                 onDateSelected(date)
-                           },
+                           }
+                            .border(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.onBackground,
+                                shape = shape
+                            ),
                         contentAlignment = Alignment.Center
                     ) {
                         BasicText(
@@ -220,7 +227,7 @@ fun NeighborCalendar(
                             .background(MaterialTheme.colorScheme.background)
                             .width(26.dp)
                             .height(26.dp)
-                            .border(1.dp, Color.Black)
+                            .border(1.dp, MaterialTheme.colorScheme.onBackground)
                     )
                     Spacer(Modifier.width(12.dp))
                     BasicText(

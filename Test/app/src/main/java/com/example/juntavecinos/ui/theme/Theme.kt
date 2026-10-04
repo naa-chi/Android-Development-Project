@@ -15,28 +15,35 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
-// 1. Mark as @Immutable for Compose compiler optimization
 @Immutable
 data class CustomColors(
     val greenText: Color,
     val redText : Color,
     val availableStatus: Color,
-    val fullStatus: Color
+    val fullStatus: Color,
+    val gray1 : Color,
+    val gray2 : Color,
+    val gray3 : Color
 )
 
-// 2. Define light and dark variants of your custom colors
 val LightCustomColors = CustomColors(
     greenText = Color(0xFF2E7D32),
     redText = Color(0xFF5B0F0F),
     availableStatus = Color(0xFF0072B2),
-    fullStatus = Color(0xFFD55E00)
+    fullStatus = Color(0xFFD55E00),
+    gray1 = Color(0xFFA3A7C7),
+    gray2 = Color(0xFF8792A4),
+    gray3 = Color(0xFF383941),
 )
 
 val DarkCustomColors = CustomColors(
     greenText = Color(0xFF8FC291),
     redText = Color(0xFFFF9AB6),
     availableStatus = Color(0xFF56B4E9),
-    fullStatus = Color(0xFFE69F00)
+    fullStatus = Color(0xFFE69F00),
+    gray1 = Color(0xFFA3A7C7),
+    gray2 = Color(0xFF8792A4),
+    gray3 = Color(0xFF383941),
 )
 
 //Add custom colors
