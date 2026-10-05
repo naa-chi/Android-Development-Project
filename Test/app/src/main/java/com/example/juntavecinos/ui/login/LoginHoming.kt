@@ -1,4 +1,4 @@
-package com.example.juntavecinos.ui.Login
+package com.example.juntavecinos.ui.login
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
@@ -13,7 +13,6 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,8 +24,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.juntavecinos.R
-import com.example.juntavecinos.ui.System.JuntaTopbar
-import com.example.juntavecinos.ui.Navigation
 import com.example.juntavecinos.ui.theme.JuntaVecinosTheme
 
 // THIS HANDLES ONLY THE WELCOMING SCREEN!!

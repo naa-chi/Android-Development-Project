@@ -1,4 +1,4 @@
-package com.example.juntavecinos.ui.Neighbor
+package com.example.juntavecinos.ui.neighbor
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.text.BasicText

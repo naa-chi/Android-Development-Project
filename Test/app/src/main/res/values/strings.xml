@@ -19,12 +19,21 @@
     <string name="directiveRole">Directiva</string>
     <string name="adminRole">Administrador</string>
     <string name="login">Iniciar Sesión</string>
+    <string name="logoff">Cerrar Sesión</string>
+    <string name="reallyLogoff">¿Realmente desea cerrar sesión?</string>
+    <string name="cancel">Cancelar</string>
+    <string name="confirm">Confirmar</string>
+    <string name="date">Fecha</string>
+    <string name="calendarDay">Revisión Dia</string>
 
     <string name="directiveLoginAsMemberOfDirective">Inicie sesión con un código de directiva:</string>
     <string name="directiveDirectiveCode">Su código personal de Directiva.</string>
     <string name="backButton">Atrás</string>
     <string name="menuButton">Menú</string>
     <string name="accountButton">Cuenta</string>
+    <string name="accountName">Nombre de usuario</string>
+    <string name="accountEmail">E-Mail de Usuario</string>
+    <string name="accountCommunity">Nombre de junta</string>
 
     <string name="neighborMoney">Registro de gastos</string>
     <string name="neighborCalendar">Solicitar arriendo</string>

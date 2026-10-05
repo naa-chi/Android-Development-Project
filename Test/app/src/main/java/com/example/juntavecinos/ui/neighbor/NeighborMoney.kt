@@ -1,8 +1,7 @@
-package com.example.juntavecinos.ui.Neighbor
+package com.example.juntavecinos.ui.neighbor
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.background
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues

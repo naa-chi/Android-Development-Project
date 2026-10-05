@@ -1,4 +1,4 @@
-package com.example.juntavecinos.ui.System
+package com.example.juntavecinos.ui.system
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

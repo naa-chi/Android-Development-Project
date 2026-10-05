@@ -1,4 +1,4 @@
-package com.example.juntavecinos.ui.Login
+package com.example.juntavecinos.ui.login
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
