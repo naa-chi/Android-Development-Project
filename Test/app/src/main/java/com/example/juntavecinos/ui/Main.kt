@@ -29,6 +29,7 @@ import com.example.juntavecinos.ui.neighbor.NeighborDayOverview
 import com.example.juntavecinos.ui.neighbor.NeighborDetailedExpenses
 import com.example.juntavecinos.ui.neighbor.NeighborMoneyReport
 import com.example.juntavecinos.ui.neighbor.NeighborNavigation
+import com.example.juntavecinos.ui.neighbor.NeighborReserveForm
 import com.example.juntavecinos.ui.system.JuntaTopbar
 import com.example.juntavecinos.ui.theme.JuntaVecinosTheme
 import java.time.LocalDate
@@ -43,7 +44,8 @@ enum class Navigation(val title: Int) {
     NeighborCalendar(title = R.string.neighborCalendar),
     NeighborProfile(title = R.string.neighborProfile),
     NeighborDetailedExpenses(title = R.string.openDetailedExpenses),
-    NeighborCalendarDay(title = R.string.calendarDay)
+    NeighborCalendarDay(title = R.string.calendarDay),
+    NeighborReserveForm(title = R.string.calendarReserveHour)
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -127,6 +129,7 @@ fun Main(
             startDestination = Navigation.LoadingHandler.name,
             modifier = Modifier.padding(innerPadding)
         ) {
+            //When the app first boots, check the account
             composable(route = Navigation.LoadingHandler.name) {
                 LoadingHandler(
                     onLoggedIn = { accountType ->
@@ -146,6 +149,7 @@ fun Main(
                 )
             }
 
+            //Choose what login screen to show
             composable(route = Navigation.LoginStarter.name) {
                 LoginHoming(
                     onNavigateToNeighbor = {
@@ -161,6 +165,7 @@ fun Main(
                 )
             }
 
+            //Show neighbor login
             composable(route = Navigation.NeighborLogin.name) {
                 NeighborLogin({
                     navController.navigate(Navigation.NeighborMoney.name) {
@@ -170,14 +175,17 @@ fun Main(
                 })
             }
 
+            //Show directive login
             composable(route = Navigation.DirectiveLogin.name) {
                 DirectiveLogin({ _, _ -> })
             }
 
+            //List of expenses detailed
             composable(route = Navigation.NeighborDetailedExpenses.name) {
                 NeighborDetailedExpenses()
             }
 
+            //Summary of expenses, non-specific.
             composable(route = Navigation.NeighborMoney.name) {
                 NeighborMoneyReport({
                     navController.navigate(Navigation.NeighborDetailedExpenses.name) {
@@ -186,6 +194,7 @@ fun Main(
                 })
             }
 
+            //Show calendar
             composable(route = Navigation.NeighborCalendar.name) {
                 NeighborCalendar(
                     onDateSelected = { date ->
@@ -197,7 +206,8 @@ fun Main(
             }
 
             //Gemini helped here, I had no idea we could
-            //pass values like this... Just like a URL
+            //pass values like this... Just like a URL.
+            //select day
             composable(
                 route = "${Navigation.NeighborCalendarDay.name}/{selectedDate}",
                 arguments = listOf(
@@ -228,10 +238,16 @@ fun Main(
                             startTime = LocalTime.of(19, 0),
                             endTime = LocalTime.of(21, 0)
                         )
-                    )
+                    ),
+                    {
+                        navController.navigate("${Navigation.NeighborReserveForm.name}/$selectedDate") {
+                            launchSingleTop = true
+                        }
+                    }
                 )
             }
 
+            //Show profile and account
             composable(route = Navigation.NeighborProfile.name) {
                 NeighborAccount {
                     navController.navigate(Navigation.LoginStarter.name) {
@@ -239,6 +255,26 @@ fun Main(
                         launchSingleTop = true
                     }
                 }
+            }
+
+            //Reserve day
+            composable (
+                route = "${Navigation.NeighborReserveForm.name}/{selectedDate}",
+                arguments = listOf(
+                    navArgument("selectedDate") { type = NavType.StringType }
+                )
+            ){  backStackEntry ->
+                val dateArg = backStackEntry.arguments?.getString("selectedDate")
+                val selectedDate = dateArg?.let { LocalDate.parse(it) } ?: LocalDate.now()
+
+                NeighborReserveForm(selectedDate, {
+                    _, _, _, _, _, _ ->
+
+                    navController.navigate(Navigation.NeighborMoney.name) {
+                        popUpTo(navController.graph.id) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                })
             }
         }
     }

@@ -25,6 +25,14 @@
     <string name="confirm">Confirmar</string>
     <string name="date">Fecha</string>
     <string name="calendarDay">Revisión Dia</string>
+    <string name="calendarReserveHour">Reservar Hora</string>
+    <string name="calendarEventTitle">Título de su evento</string>
+    <string name="calendarEventMotive">Descripción de su evento</string>
+    <string name="calendarEventType">Tipo de evento</string>
+    <string name="start">Inicio</string>
+    <string name="end">Termino</string>
+    <string name="schedule">Horario</string>
+    <string name="ok">Ok</string>
 
     <string name="directiveLoginAsMemberOfDirective">Inicie sesión con un código de directiva:</string>
     <string name="directiveDirectiveCode">Su código personal de Directiva.</string>

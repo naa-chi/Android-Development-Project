@@ -44,12 +44,15 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import androidx.compose.material3.Button
+import androidx.compose.ui.graphics.RectangleShape
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NeighborDayOverview(
     selectedDate: LocalDate = LocalDate.now(),
-    events: List<DayTimelineEvent> = emptyList()
+    events: List<DayTimelineEvent> = emptyList(),
+    onReserveHour : () -> Unit
 ) {
     val hourRowHeight = 64.dp
     val startHour = 8
@@ -72,7 +75,8 @@ fun NeighborDayOverview(
                 .padding(bottom = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
+        )
+        {
             Icon(
                 imageVector = Icons.Filled.CalendarMonth,
                 contentDescription = stringResource(R.string.date),
@@ -91,9 +95,11 @@ fun NeighborDayOverview(
         //Gemini assisted from here and below
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
+                .weight(1f)
                 .verticalScroll(rememberScrollState())
-        ) {
+        )
+        {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -190,6 +196,23 @@ fun NeighborDayOverview(
                 }
             }
         }
+
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp),
+            onClick = onReserveHour,
+            shape = RectangleShape
+        ){
+            BasicText(
+                text = stringResource(R.string.calendarReserveHour),
+                style = TextStyle(
+                    fontSize = 25.sp,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+            )
+        }
+
     }
 }
 
@@ -219,7 +242,8 @@ fun PreviewDayOverview() {
                     startTime = LocalTime.of(19, 0),
                     endTime = LocalTime.of(21, 0)
                 )
-            )
+            ),
+            {}
         )
     }
 }
