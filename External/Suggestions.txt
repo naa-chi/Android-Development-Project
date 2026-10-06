@@ -5,3 +5,11 @@ add a cost for requesting a time period?
 Cambiar codigo de vecino por RUT o Email.
 
 3 roles, usuario, gestion sobre datos (alcalde o presidente junta) y el operador de sistemas (ingresa todos los datos, no tiene accceso a gestion)
+
+Check obligatorio de "Acepto términos y condiciones"
+
+add optional numeric value for "Sillas"?
+
+add register field???? -> queue account for validation
+
+add comuna and región automatic detection via IP or GPS
