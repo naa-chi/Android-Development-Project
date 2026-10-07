@@ -15,12 +15,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerColors
+import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,6 +35,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
@@ -83,7 +87,7 @@ fun NeighborReserveForm(
     var startTime by remember { mutableStateOf(LocalTime.of(9, 0)) }
     var endTime by remember { mutableStateOf(LocalTime.of(11, 0)) }
 
-    var showDatePicker by remember { mutableStateOf(false) }
+    var showDatePicker by remember { mutableStateOf(true) }
     var showStartTimePicker by remember { mutableStateOf(false) }
     var showEndTimePicker by remember { mutableStateOf(false) }
 
@@ -95,7 +99,8 @@ fun NeighborReserveForm(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-    ) {
+    )
+    {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -182,7 +187,7 @@ fun NeighborReserveForm(
             OutlinedTextField(
                 value = title,
                 onValueChange = { newTitle ->
-                    if (newTitle.length <= 5 && newTitle > 40) title = newTitle
+                    if (newTitle.length in 5..<40) title = newTitle
                 },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RectangleShape,
@@ -279,6 +284,11 @@ fun NeighborReserveForm(
     if (showDatePicker) {
         DatePickerDialog(
             onDismissRequest = { showDatePicker = false },
+            colors = DatePickerDefaults.colors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                selectedDayContainerColor = MaterialTheme.colorScheme.primary,
+                selectedDayContentColor = MaterialTheme.colorScheme.onPrimary
+            ),
             confirmButton = {
                 TextButton(onClick = {
                     datePickerState.selectedDateMillis?.let { millis ->
@@ -287,13 +297,19 @@ fun NeighborReserveForm(
                             .toLocalDate()
                     }
                     showDatePicker = false
-                }) {
-                    Text(stringResource(R.string.ok))
+                }
+                ) {
+                    Text(
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        text = stringResource(R.string.ok)
+                    )
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDatePicker = false }) {
-                    Text(stringResource(R.string.cancel))
+                    Text(
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        text = stringResource(R.string.cancel))
                 }
             }
         ) {
