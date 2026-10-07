@@ -187,7 +187,11 @@ fun NeighborReserveForm(
             OutlinedTextField(
                 value = title,
                 onValueChange = { newTitle ->
+<<<<<<< HEAD
                     if (newTitle.length in 5..<40) title = newTitle
+=======
+                    if (newTitle.length <= 5 && newTitle.length <= 40) title = newTitle
+>>>>>>> e2c45dfec3a02f18684f9779dd6beff9ae4e8ba6
                 },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RectangleShape,
@@ -203,8 +207,8 @@ fun NeighborReserveForm(
             )
             OutlinedTextField(
                 value = description,
-                onValueChange = { newDscription ->
-                    if (newDscription.length <= 150) description = newDscription
+                onValueChange = { newDescription ->
+                    if (newDescription.length <= 150) description = newDescription
                 },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RectangleShape,

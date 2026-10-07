@@ -1,15 +1,24 @@
 import android.content.Context
+import androidx.core.content.edit
 
 class CurrentSession(context: Context) {
-    private val preferences = context.getSharedPreferences("session_prefs", Context.MODE_PRIVATE)
+    private val prefs = context.getSharedPreferences("session_prefs", Context.MODE_PRIVATE)
 
     fun login(username: String, password: String): Boolean {
         if (username == "username" && password == "qwerty") {
+<<<<<<< HEAD
             preferences.edit()
                 .putString("session_cookie", "mock_session_${System.currentTimeMillis()}")
                 // mimics having a different cookie every session!!
                 .putString("username", username)
                 .apply()
+=======
+            prefs.edit {
+                putString("session_cookie", "mock_session_${System.currentTimeMillis()}")
+                    // mimics having a different cookie every session!!
+                    .putString("username", username)
+            }
+>>>>>>> e2c45dfec3a02f18684f9779dd6beff9ae4e8ba6
                 return true
         }
         return false
@@ -20,10 +29,10 @@ class CurrentSession(context: Context) {
     fun getUsername(): String? = preferences.getString("username", null)
 
     fun logout() {
-        preferences
-            .edit()
-            .clear()
-            .apply()
+        prefs
+            .edit {
+                clear()
+            }
     }
 }
 
