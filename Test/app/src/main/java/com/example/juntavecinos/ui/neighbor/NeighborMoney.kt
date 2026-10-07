@@ -73,6 +73,8 @@ fun NeighborMoneyReport(
         val incomeLabel = stringResource(R.string.moneyGained)
 
         //TODO: Connect to DB to change this
+        //Bet :3
+
         val budget = 0
         val expenses = 10
         val income = 10
