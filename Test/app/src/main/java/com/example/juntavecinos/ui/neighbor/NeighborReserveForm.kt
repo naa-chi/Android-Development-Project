@@ -74,8 +74,8 @@ fun NeighborReserveForm(
         endTime: LocalTime
     ) -> Unit = { _, _, _, _, _, _ -> }
 ) {
-    var title by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
+    var title by remember { mutableStateOf("") } // between 6 and 40
+    var description by remember { mutableStateOf("") } // up to 150
     var selectedEventType by remember { mutableStateOf(EventType.OTHER) }
     var expandedDropdown by remember { mutableStateOf(false) }
 
@@ -181,7 +181,9 @@ fun NeighborReserveForm(
             )
             OutlinedTextField(
                 value = title,
-                onValueChange = { title = it },
+                onValueChange = { newTitle ->
+                    if (newTitle.length <= 5 && newTitle > 40) title = newTitle
+                },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RectangleShape,
                 singleLine = true
@@ -196,7 +198,9 @@ fun NeighborReserveForm(
             )
             OutlinedTextField(
                 value = description,
-                onValueChange = { description = it },
+                onValueChange = { newDscription ->
+                    if (newDscription.length <= 150) description = newDscription
+                },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RectangleShape,
                 minLines = 3
@@ -252,8 +256,10 @@ fun NeighborReserveForm(
                     description,
                     selectedEventType,
                     currentDate,
-                    startTime,
-                    endTime
+                    if (startTime.isBefore(LocalTime.now())) LocalTime.now() else startTime, // Defaults to local time if it attempts to go before this, there's probably a smarter way to do this check but it works well enough
+                    if (!startTime.isBefore(endTime))
+                        throw IllegalArgumentException("End date cannot be before the start date due to how time works")
+                    else endTime
                 )
             },
             shape = RectangleShape
