@@ -1,5 +1,6 @@
 package com.example.juntavecinos.ui.neighbor
 
+import androidx.compose.material3.AlertDialog
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -33,6 +34,7 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldColors
@@ -40,7 +42,10 @@ import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -91,8 +96,19 @@ fun NeighborReserveForm(
     var showStartTimePicker by remember { mutableStateOf(false) }
     var showEndTimePicker by remember { mutableStateOf(false) }
 
+    var errState by remember { mutableStateOf(false) }
+
     val datePickerState = rememberDatePickerState(
         initialSelectedDateMillis = dateSelected.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
+    )
+
+    val pickerTextFieldColors = OutlinedTextFieldDefaults.colors(
+        disabledTextColor = MaterialTheme.colorScheme.onSurface,
+        disabledBorderColor = MaterialTheme.colorScheme.outline,
+        disabledLeadingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        disabledTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        disabledPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant
     )
 
     Column(
@@ -128,7 +144,8 @@ fun NeighborReserveForm(
                     enabled = false,
                     trailingIcon = { Icon(Icons.Default.CalendarMonth, contentDescription = null) },
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RectangleShape
+                    shape = RectangleShape,
+                    colors = pickerTextFieldColors
                 )
             }
 
@@ -156,7 +173,8 @@ fun NeighborReserveForm(
                         enabled = false,
                         trailingIcon = { Icon(Icons.Default.AccessTime, contentDescription = null) },
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RectangleShape
+                        shape = RectangleShape,
+                        colors = pickerTextFieldColors,
                     )
                 }
                 Box(
@@ -172,7 +190,8 @@ fun NeighborReserveForm(
                         enabled = false,
                         trailingIcon = { Icon(Icons.Default.AccessTime, contentDescription = null) },
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RectangleShape
+                        shape = RectangleShape,
+                        colors = pickerTextFieldColors,
                     )
                 }
             }
@@ -187,11 +206,7 @@ fun NeighborReserveForm(
             OutlinedTextField(
                 value = title,
                 onValueChange = { newTitle ->
-<<<<<<< HEAD
-                    if (newTitle.length in 5..<40) title = newTitle
-=======
-                    if (newTitle.length <= 5 && newTitle.length <= 40) title = newTitle
->>>>>>> e2c45dfec3a02f18684f9779dd6beff9ae4e8ba6
+                    if (newTitle.length <= 40) title = newTitle
                 },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RectangleShape,
@@ -260,20 +275,18 @@ fun NeighborReserveForm(
                 .fillMaxWidth()
                 .height(56.dp),
             onClick = {
-                onReserveSubmit(
-                    title,
-                    description,
-                    selectedEventType,
-                    currentDate,
-                    if (startTime.isBefore(LocalTime.now())) LocalTime.now() else startTime, // Defaults to local time if it attempts to go before this, there's probably a smarter way to do this check but it works well enough
-                    if (!startTime.isBefore(endTime))
-                        throw IllegalArgumentException("End date cannot be before the start date due to how time works")
-                    else endTime
-                )
+                if (!startTime.isBefore(endTime)) {
+                    errState = true
+                } else {
+                    onReserveSubmit(
+                        title, description, selectedEventType, currentDate,
+                        if (startTime.isBefore(LocalTime.now())) LocalTime.now() else startTime,
+                        endTime
+                    )
+                }
             },
             shape = RectangleShape
-        )
-        {
+        ) {
             BasicText(
                 text = stringResource(R.string.calendarReserveHour),
                 style = TextStyle(
@@ -281,6 +294,17 @@ fun NeighborReserveForm(
                     color = MaterialTheme.colorScheme.onPrimary,
                     textAlign = TextAlign.Center
                 )
+            )
+        }
+
+        if (errState) {
+            AlertDialog(
+                onDismissRequest = { errState = false },
+                title = { Text("Aviso!") },
+                text = { Text("No se permite tener un tiempo de fin antes que el tiempo de inicio.") },
+                confirmButton = {
+                    TextButton(onClick = { errState = false }) { Text("OK") }
+                }
             )
         }
     }
@@ -327,6 +351,12 @@ fun NeighborReserveForm(
             initialMinute = startTime.minute,
             is24Hour = true
         )
+        var pendingHour by remember { mutableIntStateOf(timePickerState.hour) }
+        var pendingMinute by remember { mutableIntStateOf(timePickerState.minute) }
+
+        LaunchedEffect(timePickerState.hour) { pendingHour = timePickerState.hour }
+        LaunchedEffect(timePickerState.minute) { pendingMinute = timePickerState.minute }
+
         Dialog(onDismissRequest = { showStartTimePicker = false }) {
             Column(
                 modifier = Modifier
@@ -339,39 +369,114 @@ fun NeighborReserveForm(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End
                 ) {
-                    TextButton(onClick = { showStartTimePicker = false }) { Text(stringResource(R.string.cancel)) }
+                    TextButton(onClick = { showStartTimePicker = false }) {
+                        Text(
+                            text = stringResource(R.string.cancel),
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
                     TextButton(onClick = {
-                        startTime = LocalTime.of(timePickerState.hour, timePickerState.minute)
+                        startTime = LocalTime.of(pendingHour, pendingMinute)
                         showStartTimePicker = false
-                    }) { Text(stringResource(R.string.ok)) }
+                    }) {
+                        Text(
+                            text = stringResource(R.string.ok),
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
                 }
             }
         }
     }
 
     if (showEndTimePicker) {
-        val timePickerState = rememberTimePickerState(
-            initialHour = endTime.hour,
-            initialMinute = endTime.minute,
-            is24Hour = true
-        )
-        Dialog(onDismissRequest = { showEndTimePicker = false }) {
-            Column(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.primary, RectangleShape)
-                    .padding(20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                TimePicker(state = timePickerState)
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
+        key("starTimePicker") {
+            val timePickerState = rememberTimePickerState(
+                initialHour = endTime.hour,
+                initialMinute = endTime.minute,
+                is24Hour = true
+            )
+
+            var pendingHour by remember { mutableIntStateOf(timePickerState.hour) }
+            var pendingMinute by remember { mutableIntStateOf(timePickerState.minute) }
+
+            LaunchedEffect(timePickerState.hour) { pendingHour = timePickerState.hour }
+            LaunchedEffect(timePickerState.minute) { pendingMinute = timePickerState.minute }
+
+            Dialog(onDismissRequest = { showEndTimePicker = false }) {
+                Column(
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.primary, RectangleShape)
+                        .padding(20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    TextButton(onClick = { showEndTimePicker = false }) { Text(stringResource(R.string.cancel)) }
-                    TextButton(onClick = {
-                        endTime = LocalTime.of(timePickerState.hour, timePickerState.minute)
-                        showEndTimePicker = false
-                    }) { Text(stringResource(R.string.ok)) }
+                    TimePicker(state = timePickerState)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        TextButton(onClick = { showEndTimePicker = false }) {
+                            Text(
+                                text = stringResource(R.string.cancel),
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
+                        TextButton(onClick = {
+                            endTime = LocalTime.of(pendingHour, pendingMinute)
+                            showEndTimePicker = false
+                        }) {
+                            Text(
+                                text = stringResource(R.string.ok),
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if (showEndTimePicker) {
+        key("endTimePicker") {
+            val timePickerState = rememberTimePickerState(
+                initialHour = endTime.hour,
+                initialMinute = endTime.minute,
+                is24Hour = true
+            )
+
+            var pendingHour by remember { mutableIntStateOf(timePickerState.hour) }
+            var pendingMinute by remember { mutableIntStateOf(timePickerState.minute) }
+
+            LaunchedEffect(timePickerState.hour) { pendingHour = timePickerState.hour }
+            LaunchedEffect(timePickerState.minute) { pendingMinute = timePickerState.minute }
+
+            Dialog(onDismissRequest = { showEndTimePicker = false }) {
+                Column(
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.primary, RectangleShape)
+                        .padding(20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    TimePicker(state = timePickerState)
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        TextButton(onClick = { showEndTimePicker = false }) {
+                            Text(
+                                stringResource(R.string.cancel),
+                                color = MaterialTheme.colorScheme.onPrimary)
+
+                        }
+                        TextButton(onClick = {
+                            endTime = LocalTime.of(timePickerState.hour, timePickerState.minute)
+                            showEndTimePicker = false
+                        }) {
+                            Text(
+                                stringResource(R.string.ok),
+                                color = MaterialTheme.colorScheme.onPrimary)
+                        }
+                    }
                 }
             }
         }
