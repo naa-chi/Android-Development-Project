@@ -69,6 +69,11 @@ import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import com.example.juntavecinos.validation.DescriptionError
+import com.example.juntavecinos.validation.EventTitleError
+import com.example.juntavecinos.validation.EventValidator
+import com.example.juntavecinos.validation.ScheduleError
+
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -84,6 +89,7 @@ fun NeighborReserveForm(
     ) -> Unit = { _, _, _, _, _, _ -> }
 ) {
     var title by remember { mutableStateOf("") } // between 6 and 40
+    val titleError = EventValidator.validateTitle(title)
     var description by remember { mutableStateOf("") } // up to 150
     var selectedEventType by remember { mutableStateOf(EventType.OTHER) }
     var expandedDropdown by remember { mutableStateOf(false) }
@@ -96,7 +102,10 @@ fun NeighborReserveForm(
     var showStartTimePicker by remember { mutableStateOf(false) }
     var showEndTimePicker by remember { mutableStateOf(false) }
 
-    var errState by remember { mutableStateOf(false) }
+    val descriptionError = EventValidator.validateDescription(description)
+    val scheduleError    = EventValidator.validateSchedule(startTime, endTime)
+
+    var errorMessage by remember { mutableStateOf<String?>(null) }
 
     val datePickerState = rememberDatePickerState(
         initialSelectedDateMillis = dateSelected.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
@@ -206,11 +215,19 @@ fun NeighborReserveForm(
             OutlinedTextField(
                 value = title,
                 onValueChange = { newTitle ->
-                    if (newTitle.length <= 40) title = newTitle
+                    if (newTitle.length <= EventValidator.TITLE_MAX_LENGTH) title = newTitle
                 },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RectangleShape,
-                singleLine = true
+                singleLine = true,
+                isError = titleError != null,
+                supportingText = {
+                    when (titleError) {
+                        EventTitleError.TOO_SHORT -> Text("Mínimo ${EventValidator.TITLE_MIN_LENGTH} caracteres")
+                        EventTitleError.TOO_LONG  -> Text("Máximo ${EventValidator.TITLE_MAX_LENGTH} caracteres")
+                        null -> {}
+                    }
+                }
             )
 
             BasicText(
@@ -223,11 +240,21 @@ fun NeighborReserveForm(
             OutlinedTextField(
                 value = description,
                 onValueChange = { newDescription ->
-                    if (newDescription.length <= 150) description = newDescription
+                    if (newDescription.length <= EventValidator.DESCRIPTION_MAX_LENGTH) {
+                        description = newDescription
+                    }
                 },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RectangleShape,
-                minLines = 3
+                minLines = 3,
+                isError = descriptionError != null,
+                supportingText = {
+                    when (descriptionError) {
+                        DescriptionError.NONE_AT_ALL -> Text("Escribe una descripción")
+                        DescriptionError.TOO_LONG    -> Text("Máximo ${EventValidator.DESCRIPTION_MAX_LENGTH} caracteres")
+                        null -> {}
+                    }
+                }
             )
 
             BasicText(
@@ -275,12 +302,16 @@ fun NeighborReserveForm(
                 .fillMaxWidth()
                 .height(56.dp),
             onClick = {
-                if (!startTime.isBefore(endTime)) {
-                    errState = true
-                } else {
-                    onReserveSubmit(
-                        title, description, selectedEventType, currentDate,
-                        if (startTime.isBefore(LocalTime.now())) LocalTime.now() else startTime,
+                when {
+                    titleError != null -> errorMessage = "Revisa el título"
+                    descriptionError != null -> errorMessage = "Revisa la descripción"
+                    scheduleError != null -> errorMessage = "La hora de fin no puede ser anterior a la de inicio"
+                    else -> onReserveSubmit(
+                        title,
+                        description,
+                        selectedEventType,
+                        currentDate,
+                        EventValidator.effectiveStart(startTime),
                         endTime
                     )
                 }
@@ -297,13 +328,13 @@ fun NeighborReserveForm(
             )
         }
 
-        if (errState) {
+        errorMessage?.let { message ->
             AlertDialog(
-                onDismissRequest = { errState = false },
-                title = { Text("Aviso!") },
-                text = { Text("No se permite tener un tiempo de fin antes que el tiempo de inicio.") },
+                onDismissRequest = { errorMessage = null },
+                title = { Text("¡¡¡¡ AVISO !!!!") },
+                text = { Text(message) },
                 confirmButton = {
-                    TextButton(onClick = { errState = false }) { Text("OK") }
+                    TextButton(onClick = { errorMessage = null }) { Text("OK") }
                 }
             )
         }
@@ -346,64 +377,19 @@ fun NeighborReserveForm(
     }
 
     if (showStartTimePicker) {
-        val timePickerState = rememberTimePickerState(
-            initialHour = startTime.hour,
-            initialMinute = startTime.minute,
-            is24Hour = true
-        )
-        var pendingHour by remember { mutableIntStateOf(timePickerState.hour) }
-        var pendingMinute by remember { mutableIntStateOf(timePickerState.minute) }
-
-        LaunchedEffect(timePickerState.hour) { pendingHour = timePickerState.hour }
-        LaunchedEffect(timePickerState.minute) { pendingMinute = timePickerState.minute }
-
-        Dialog(onDismissRequest = { showStartTimePicker = false }) {
-            Column(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.primary, RectangleShape)
-                    .padding(20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                TimePicker(state = timePickerState)
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    TextButton(onClick = { showStartTimePicker = false }) {
-                        Text(
-                            text = stringResource(R.string.cancel),
-                            color = MaterialTheme.colorScheme.onPrimary
-                        )
-                    }
-                    TextButton(onClick = {
-                        startTime = LocalTime.of(pendingHour, pendingMinute)
-                        showStartTimePicker = false
-                    }) {
-                        Text(
-                            text = stringResource(R.string.ok),
-                            color = MaterialTheme.colorScheme.onPrimary
-                        )
-                    }
-                }
-            }
-        }
-    }
-
-    if (showEndTimePicker) {
-        key("starTimePicker") {
+        key("StartTimePicker") {
             val timePickerState = rememberTimePickerState(
-                initialHour = endTime.hour,
-                initialMinute = endTime.minute,
+                initialHour = startTime.hour,
+                initialMinute = startTime.minute,
                 is24Hour = true
             )
-
             var pendingHour by remember { mutableIntStateOf(timePickerState.hour) }
             var pendingMinute by remember { mutableIntStateOf(timePickerState.minute) }
 
             LaunchedEffect(timePickerState.hour) { pendingHour = timePickerState.hour }
             LaunchedEffect(timePickerState.minute) { pendingMinute = timePickerState.minute }
 
-            Dialog(onDismissRequest = { showEndTimePicker = false }) {
+            Dialog(onDismissRequest = { showStartTimePicker = false }) {
                 Column(
                     modifier = Modifier
                         .background(MaterialTheme.colorScheme.primary, RectangleShape)
@@ -415,15 +401,15 @@ fun NeighborReserveForm(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.End
                     ) {
-                        TextButton(onClick = { showEndTimePicker = false }) {
+                        TextButton(onClick = { showStartTimePicker = false }) {
                             Text(
                                 text = stringResource(R.string.cancel),
                                 color = MaterialTheme.colorScheme.onPrimary
                             )
                         }
                         TextButton(onClick = {
-                            endTime = LocalTime.of(pendingHour, pendingMinute)
-                            showEndTimePicker = false
+                            startTime = LocalTime.of(pendingHour, pendingMinute)
+                            showStartTimePicker = false
                         }) {
                             Text(
                                 text = stringResource(R.string.ok),

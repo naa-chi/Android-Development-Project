@@ -19,7 +19,7 @@ class CurrentSession(context: Context) {
 
     fun isLoggedIn(): Boolean = prefs.getString("session_cookie", null) != null
 
-    fun getUsername(): String? = prefs.getString("username", null)
+    fun getUsername(): String? = prefs.getString("rut", null)
 
     fun logout() {
         prefs
