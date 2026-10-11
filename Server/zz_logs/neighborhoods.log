@@ -1,0 +1,97 @@
+===== Neighborhoods — started 2026-10-11T07:17:15.185895 =====
+[INFO] Scanning for projects...
+[INFO] Loaded 24054 auto-discovered prefixes for remote repository central (prefixes-central.txt)
+[INFO] 
+[INFO] ----------------------< com.juntas:neighborhood >-----------------------
+[INFO] Building  0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:4.1.1:run (default-cli) > test-compile @ neighborhood >>>
+[INFO] Loaded 74 auto-discovered prefixes for remote repository apache.snapshots (prefixes-apache.snapshots.txt)
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ neighborhood ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ neighborhood ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ neighborhood ---
+[INFO] skip non existing resourceDirectory C:\Users\nachi\Documents\GitHub\Android-Development-Project-main\Android-Development-Project-main\Server\neighborhood\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ neighborhood ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] <<< spring-boot:4.1.1:run (default-cli) < test-compile @ neighborhood <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:4.1.1:run (default-cli) @ neighborhood ---
+[INFO] Loaded 50 auto-discovered prefixes for remote repository ow2-snapshot (prefixes-ow2-snapshot.txt)
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-10-11T07:17:29.257-03:00  INFO 17144 --- [neighborhood] [           main] c.j.n.NeighborhoodApplication            : Starting NeighborhoodApplication using Java 21.0.11 with PID 17144 (C:\Users\nachi\Documents\GitHub\Android-Development-Project-main\Android-Development-Project-main\Server\neighborhood\target\classes started by nachi in C:\Users\nachi\Documents\GitHub\Android-Development-Project-main\Android-Development-Project-main\Server\neighborhood)
+2026-10-11T07:17:29.264-03:00  INFO 17144 --- [neighborhood] [           main] c.j.n.NeighborhoodApplication            : No active profile set, falling back to 1 default profile: "default"
+2026-10-11T07:17:30.992-03:00  INFO 17144 --- [neighborhood] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-11T07:17:31.244-03:00  INFO 17144 --- [neighborhood] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 234 ms. Found 1 JPA repository interface.
+2026-10-11T07:17:31.866-03:00  INFO 17144 --- [neighborhood] [           main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=d17b6505-1bcb-34f5-89ee-3e33fc56d530
+2026-10-11T07:17:33.170-03:00  INFO 17144 --- [neighborhood] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8387 (http)
+2026-10-11T07:17:33.198-03:00  INFO 17144 --- [neighborhood] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-11T07:17:33.199-03:00  INFO 17144 --- [neighborhood] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.24]
+2026-10-11T07:17:33.332-03:00  INFO 17144 --- [neighborhood] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 3970 ms
+2026-10-11T07:17:33.811-03:00  INFO 17144 --- [neighborhood] [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-10-11T07:17:33.944-03:00  INFO 17144 --- [neighborhood] [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.4.5.Final
+2026-10-11T07:17:34.959-03:00  INFO 17144 --- [neighborhood] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-11T07:17:35.034-03:00  INFO 17144 --- [neighborhood] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-11T07:17:35.390-03:00  INFO 17144 --- [neighborhood] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@296a71df
+2026-10-11T07:17:35.394-03:00  INFO 17144 --- [neighborhood] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-11T07:17:35.491-03:00  WARN 17144 --- [neighborhood] [           main] org.hibernate.orm.core                   : HHH000511: The 5.5.5 version for [org.hibernate.dialect.MySQLDialect] is no longer supported, hence certain features may not work properly.The minimum supported version is 8.0.0. Check the community dialects project for available legacy versions.
+2026-10-11T07:17:35.497-03:00  WARN 17144 --- [neighborhood] [           main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-10-11T07:17:35.535-03:00  INFO 17144 --- [neighborhood] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:mysql://localhost:3306/JVDB_Neighborhood?createDatabaseIfNotExist=true]
+	Database driver: MySQL Connector/J
+	Database dialect: MySQLDialect
+	Database version: 5.5.5
+	Default catalog/schema: JVDB_Neighborhood/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-10-11T07:17:37.600-03:00  INFO 17144 --- [neighborhood] [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-10-11T07:17:37.733-03:00  INFO 17144 --- [neighborhood] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-11T07:17:38.048-03:00  INFO 17144 --- [neighborhood] [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-10-11T07:17:38.441-03:00  WARN 17144 --- [neighborhood] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-10-11T07:17:40.749-03:00  INFO 17144 --- [neighborhood] [           main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestClient.
+2026-10-11T07:17:40.942-03:00  WARN 17144 --- [neighborhood] [           main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-10-11T07:17:41.090-03:00  INFO 17144 --- [neighborhood] [           main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-10-11T07:17:41.139-03:00  INFO 17144 --- [neighborhood] [           main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-10-11T07:17:41.146-03:00  INFO 17144 --- [neighborhood] [           main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-10-11T07:17:41.162-03:00  INFO 17144 --- [neighborhood] [           main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-10-11T07:17:41.163-03:00  INFO 17144 --- [neighborhood] [           main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-10-11T07:17:41.163-03:00  INFO 17144 --- [neighborhood] [           main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-10-11T07:17:41.163-03:00  INFO 17144 --- [neighborhood] [           main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-10-11T07:17:41.163-03:00  INFO 17144 --- [neighborhood] [           main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-10-11T07:17:41.163-03:00  INFO 17144 --- [neighborhood] [           main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-10-11T07:17:41.163-03:00  INFO 17144 --- [neighborhood] [           main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-10-11T07:17:41.831-03:00  INFO 17144 --- [neighborhood] [           main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-10-11T07:17:41.834-03:00  INFO 17144 --- [neighborhood] [           main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-10-11T07:17:41.838-03:00  INFO 17144 --- [neighborhood] [           main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-10-11T07:17:41.841-03:00  INFO 17144 --- [neighborhood] [           main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1791713861840 with initial instances count: 1
+2026-10-11T07:17:41.863-03:00  INFO 17144 --- [neighborhood] [           main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application NEIGHBORHOOD with eureka with status UP
+2026-10-11T07:17:41.865-03:00  INFO 17144 --- [neighborhood] [           main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1791713861865, current=UP, previous=STARTING]
+2026-10-11T07:17:41.868-03:00  INFO 17144 --- [neighborhood] [foReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_NEIGHBORHOOD/naachi:neighborhood:8387: registering service...
+2026-10-11T07:17:41.901-03:00  INFO 17144 --- [neighborhood] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8387 (http) with context path '/'
+2026-10-11T07:17:41.903-03:00  INFO 17144 --- [neighborhood] [           main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8387
+2026-10-11T07:17:41.923-03:00  INFO 17144 --- [neighborhood] [           main] c.j.n.NeighborhoodApplication            : Started NeighborhoodApplication in 13.529 seconds (process running for 14.76)
+2026-10-11T07:17:41.932-03:00  INFO 17144 --- [neighborhood] [foReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_NEIGHBORHOOD/naachi:neighborhood:8387 - registration status: 204
