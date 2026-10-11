@@ -1,0 +1,112 @@
+===== Venues — started 2026-10-11T06:18:49.560494 =====
+[INFO] Scanning for projects...
+[INFO] Loaded 24054 auto-discovered prefixes for remote repository central (prefixes-central.txt)
+[INFO] 
+[INFO] --------------------------< com.juntas:venue >--------------------------
+[INFO] Building  0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:4.1.1:run (default-cli) > test-compile @ venue >>>
+[INFO] Loaded 74 auto-discovered prefixes for remote repository apache.snapshots (prefixes-apache.snapshots.txt)
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ venue ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ venue ---
+[INFO] Recompiling the module because of added or removed source files.
+[INFO] Compiling 14 source files with javac [debug parameters release 21] to target\classes
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ venue ---
+[INFO] skip non existing resourceDirectory C:\Users\nachi\Documents\GitHub\Android-Development-Project-main\Android-Development-Project-main\Server\venue\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ venue ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 1 source file with javac [debug parameters release 21] to target\test-classes
+[INFO] 
+[INFO] <<< spring-boot:4.1.1:run (default-cli) < test-compile @ venue <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:4.1.1:run (default-cli) @ venue ---
+[INFO] Loaded 50 auto-discovered prefixes for remote repository ow2-snapshot (prefixes-ow2-snapshot.txt)
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-10-11T06:19:08.295-03:00  INFO 24748 --- [venue] [           main] com.juntas.venue.VenueApplication        : Starting VenueApplication using Java 21.0.11 with PID 24748 (C:\Users\nachi\Documents\GitHub\Android-Development-Project-main\Android-Development-Project-main\Server\venue\target\classes started by nachi in C:\Users\nachi\Documents\GitHub\Android-Development-Project-main\Android-Development-Project-main\Server\venue)
+2026-10-11T06:19:08.302-03:00  INFO 24748 --- [venue] [           main] com.juntas.venue.VenueApplication        : No active profile set, falling back to 1 default profile: "default"
+2026-10-11T06:19:09.768-03:00  INFO 24748 --- [venue] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-10-11T06:19:10.036-03:00  INFO 24748 --- [venue] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 252 ms. Found 1 JPA repository interface.
+2026-10-11T06:19:10.586-03:00  INFO 24748 --- [venue] [           main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=786a19d0-62db-3af1-8869-1b36f8210043
+2026-10-11T06:19:11.916-03:00  INFO 24748 --- [venue] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8386 (http)
+2026-10-11T06:19:11.945-03:00  INFO 24748 --- [venue] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-11T06:19:11.945-03:00  INFO 24748 --- [venue] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.24]
+2026-10-11T06:19:12.096-03:00  INFO 24748 --- [venue] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 3703 ms
+2026-10-11T06:19:12.582-03:00  INFO 24748 --- [venue] [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-10-11T06:19:12.715-03:00  INFO 24748 --- [venue] [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.4.5.Final
+2026-10-11T06:19:13.626-03:00  INFO 24748 --- [venue] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-10-11T06:19:13.707-03:00  INFO 24748 --- [venue] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-10-11T06:19:14.819-03:00  INFO 24748 --- [venue] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@32c08610
+2026-10-11T06:19:14.823-03:00  INFO 24748 --- [venue] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-10-11T06:19:14.907-03:00  WARN 24748 --- [venue] [           main] org.hibernate.orm.core                   : HHH000511: The 5.5.5 version for [org.hibernate.dialect.MySQLDialect] is no longer supported, hence certain features may not work properly.The minimum supported version is 8.0.0. Check the community dialects project for available legacy versions.
+2026-10-11T06:19:14.913-03:00  WARN 24748 --- [venue] [           main] org.hibernate.orm.deprecation            : HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-10-11T06:19:14.950-03:00  INFO 24748 --- [venue] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:mysql://localhost:3306/JVDB_Venue?createDatabaseIfNotExist=true]
+	Database driver: MySQL Connector/J
+	Database dialect: MySQLDialect
+	Database version: 5.5.5
+	Default catalog/schema: JVDB_Venue/undefined
+	Autocommit mode: undefined/unknown
+	Isolation level: REPEATABLE_READ [default REPEATABLE_READ]
+	JDBC fetch size: none
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-10-11T06:19:16.695-03:00  INFO 24748 --- [venue] [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+Hibernate: 
+    create table venue (
+        id bigint not null auto_increment,
+        capacity integer not null,
+        neighborhood_id bigint not null,
+        price_per_hour decimal(10,2) not null,
+        type enum ('FAIRE','HALL','KITCHEN','MEETING_ROOM','OTHER','PLAYGROUND','POOL','ROOFTOP','SPORTS_COURT') not null,
+        venue_name varchar(255) not null,
+        venue_sizemsquared bigint not null,
+        primary key (id),
+        check ((venue_sizemsquared>=1))
+    ) engine=InnoDB
+2026-10-11T06:19:16.816-03:00  INFO 24748 --- [venue] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-10-11T06:19:17.201-03:00  INFO 24748 --- [venue] [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-10-11T06:19:17.687-03:00  WARN 24748 --- [venue] [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-10-11T06:19:20.025-03:00  INFO 24748 --- [venue] [           main] DiscoveryClientOptionalArgsConfiguration : Eureka HTTP Client uses RestClient.
+2026-10-11T06:19:20.292-03:00  WARN 24748 --- [venue] [           main] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-10-11T06:19:20.505-03:00  INFO 24748 --- [venue] [           main] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-10-11T06:19:20.573-03:00  INFO 24748 --- [venue] [           main] com.netflix.discovery.DiscoveryClient    : Initializing Eureka in region us-east-1
+2026-10-11T06:19:20.580-03:00  INFO 24748 --- [venue] [           main] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration
+2026-10-11T06:19:20.597-03:00  INFO 24748 --- [venue] [           main] com.netflix.discovery.DiscoveryClient    : Disable delta property : false
+2026-10-11T06:19:20.598-03:00  INFO 24748 --- [venue] [           main] com.netflix.discovery.DiscoveryClient    : Single vip registry refresh property : null
+2026-10-11T06:19:20.598-03:00  INFO 24748 --- [venue] [           main] com.netflix.discovery.DiscoveryClient    : Force full registry fetch : false
+2026-10-11T06:19:20.598-03:00  INFO 24748 --- [venue] [           main] com.netflix.discovery.DiscoveryClient    : Application is null : false
+2026-10-11T06:19:20.598-03:00  INFO 24748 --- [venue] [           main] com.netflix.discovery.DiscoveryClient    : Registered Applications size is zero : true
+2026-10-11T06:19:20.598-03:00  INFO 24748 --- [venue] [           main] com.netflix.discovery.DiscoveryClient    : Application version is -1: true
+2026-10-11T06:19:20.598-03:00  INFO 24748 --- [venue] [           main] com.netflix.discovery.DiscoveryClient    : Getting all instance registry info from the eureka server
+2026-10-11T06:19:21.310-03:00  INFO 24748 --- [venue] [           main] com.netflix.discovery.DiscoveryClient    : The response status is 200
+2026-10-11T06:19:21.313-03:00  INFO 24748 --- [venue] [           main] com.netflix.discovery.DiscoveryClient    : Starting heartbeat executor: renew interval is: 30
+2026-10-11T06:19:21.316-03:00  INFO 24748 --- [venue] [           main] c.n.discovery.InstanceInfoReplicator     : InstanceInfoReplicator onDemand update allowed rate per min is 4
+2026-10-11T06:19:21.320-03:00  INFO 24748 --- [venue] [           main] com.netflix.discovery.DiscoveryClient    : Discovery Client initialized at timestamp 1791710361318 with initial instances count: 1
+2026-10-11T06:19:21.344-03:00  INFO 24748 --- [venue] [           main] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application VENUE with eureka with status UP
+2026-10-11T06:19:21.345-03:00  INFO 24748 --- [venue] [           main] com.netflix.discovery.DiscoveryClient    : Saw local status change event StatusChangeEvent [timestamp=1791710361345, current=UP, previous=STARTING]
+2026-10-11T06:19:21.348-03:00  INFO 24748 --- [venue] [foReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_VENUE/naachi:venue:8386: registering service...
+2026-10-11T06:19:21.385-03:00  INFO 24748 --- [venue] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8386 (http) with context path '/'
+2026-10-11T06:19:21.387-03:00  INFO 24748 --- [venue] [           main] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8386
+2026-10-11T06:19:21.406-03:00  INFO 24748 --- [venue] [           main] com.juntas.venue.VenueApplication        : Started VenueApplication in 13.916 seconds (process running for 15.248)
+2026-10-11T06:19:21.416-03:00  INFO 24748 --- [venue] [foReplicator-%d] com.netflix.discovery.DiscoveryClient    : DiscoveryClient_VENUE/naachi:venue:8386 - registration status: 204
+2026-10-11T06:24:20.601-03:00  INFO 24748 --- [venue] [rap-executor-%d] c.n.d.s.r.aws.ConfigClusterResolver      : Resolving eureka endpoints via configuration

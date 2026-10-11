@@ -1,0 +1,66 @@
+===== Discovery — started 2026-10-11T06:17:38.149321 =====
+[INFO] Scanning for projects...
+[INFO] Loaded 24054 auto-discovered prefixes for remote repository central (prefixes-central.txt)
+[INFO] 
+[INFO] ------------------------< com.juntas:discovery >------------------------
+[INFO] Building  0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:4.1.1:run (default-cli) > test-compile @ discovery >>>
+[INFO] Loaded 74 auto-discovered prefixes for remote repository apache.snapshots (prefixes-apache.snapshots.txt)
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ discovery ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ discovery ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 1 source file with javac [debug parameters release 21] to target\classes
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ discovery ---
+[INFO] skip non existing resourceDirectory C:\Users\nachi\Documents\GitHub\Android-Development-Project-main\Android-Development-Project-main\Server\zDiscovery\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ discovery ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 1 source file with javac [debug parameters release 21] to target\test-classes
+[INFO] 
+[INFO] <<< spring-boot:4.1.1:run (default-cli) < test-compile @ discovery <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:4.1.1:run (default-cli) @ discovery ---
+[INFO] Loaded 50 auto-discovered prefixes for remote repository ow2-snapshot (prefixes-ow2-snapshot.txt)
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-10-11T06:17:56.683-03:00  INFO 27124 --- [eureka-server] [  restartedMain] c.juntas.eureka.EurekaServerApplication  : Starting EurekaServerApplication using Java 21.0.11 with PID 27124 (C:\Users\nachi\Documents\GitHub\Android-Development-Project-main\Android-Development-Project-main\Server\zDiscovery\target\classes started by nachi in C:\Users\nachi\Documents\GitHub\Android-Development-Project-main\Android-Development-Project-main\Server\zDiscovery)
+2026-10-11T06:17:56.690-03:00  INFO 27124 --- [eureka-server] [  restartedMain] c.juntas.eureka.EurekaServerApplication  : No active profile set, falling back to 1 default profile: "default"
+2026-10-11T06:17:56.785-03:00  INFO 27124 --- [eureka-server] [  restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2026-10-11T06:17:56.786-03:00  INFO 27124 --- [eureka-server] [  restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2026-10-11T06:17:58.434-03:00  INFO 27124 --- [eureka-server] [  restartedMain] o.s.cloud.context.scope.GenericScope     : BeanFactory id=ced305d6-c534-328a-b5cc-c32954bb979b
+2026-10-11T06:17:59.146-03:00  INFO 27124 --- [eureka-server] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8761 (http)
+2026-10-11T06:17:59.178-03:00  INFO 27124 --- [eureka-server] [  restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-10-11T06:17:59.179-03:00  INFO 27124 --- [eureka-server] [  restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.24]
+2026-10-11T06:17:59.281-03:00  INFO 27124 --- [eureka-server] [  restartedMain] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 2492 ms
+2026-10-11T06:18:01.480-03:00  INFO 27124 --- [eureka-server] [  restartedMain] o.s.v.b.OptionalValidatorFactoryBean     : Failed to set up a Bean Validation provider: jakarta.validation.NoProviderFoundException: Unable to create a Configuration, because no Jakarta Validation provider could be found. Add a provider like Hibernate Validator (RI) to your classpath.
+2026-10-11T06:18:02.541-03:00  WARN 27124 --- [eureka-server] [  restartedMain] iguration$LoadBalancerCaffeineWarnLogger : Spring Cloud LoadBalancer is currently working with the default cache. While this cache implementation is useful for development and tests, it's recommended to use Caffeine cache in production.You can switch to using Caffeine cache, by adding it and org.springframework.cache.caffeine.CaffeineCacheManager to the classpath.
+2026-10-11T06:18:02.576-03:00  INFO 27124 --- [eureka-server] [  restartedMain] o.s.c.n.eureka.InstanceInfoFactory       : Setting initial instance status as: STARTING
+2026-10-11T06:18:02.963-03:00  INFO 27124 --- [eureka-server] [  restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 1 endpoint beneath base path '/actuator'
+2026-10-11T06:18:03.041-03:00  INFO 27124 --- [eureka-server] [  restartedMain] o.s.c.n.e.s.EurekaServiceRegistry        : Registering application EUREKA-SERVER with eureka with status UP
+2026-10-11T06:18:03.058-03:00  INFO 27124 --- [eureka-server] [      Thread-13] o.s.c.n.e.server.EurekaServerBootstrap   : isAws returned false
+2026-10-11T06:18:03.059-03:00  INFO 27124 --- [eureka-server] [      Thread-13] o.s.c.n.e.server.EurekaServerBootstrap   : Initialized server context
+2026-10-11T06:18:03.062-03:00  INFO 27124 --- [eureka-server] [      Thread-13] e.s.EurekaServerInitializerConfiguration : Started Eureka Server
+2026-10-11T06:18:03.081-03:00  INFO 27124 --- [eureka-server] [  restartedMain] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8761 (http) with context path '/'
+2026-10-11T06:18:03.083-03:00  INFO 27124 --- [eureka-server] [  restartedMain] .s.c.n.e.s.EurekaAutoServiceRegistration : Updating port to 8761
+2026-10-11T06:18:03.106-03:00  INFO 27124 --- [eureka-server] [  restartedMain] c.juntas.eureka.EurekaServerApplication  : Started EurekaServerApplication in 7.401 seconds (process running for 8.689)
+2026-10-11T06:18:43.237-03:00  INFO 27124 --- [eureka-server] [nio-8761-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-10-11T06:18:43.238-03:00  INFO 27124 --- [eureka-server] [nio-8761-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-10-11T06:18:43.241-03:00  INFO 27124 --- [eureka-server] [nio-8761-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
