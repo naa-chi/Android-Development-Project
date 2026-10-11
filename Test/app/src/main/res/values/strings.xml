@@ -33,6 +33,8 @@
     <string name="end">Termino</string>
     <string name="schedule">Horario</string>
     <string name="ok">Ok</string>
+    <string name="headerMessageWarning">¡Aviso!</string>
+
 
     <string name="directiveLoginAsMemberOfDirective">Inicie sesión con un código de directiva:</string>
     <string name="directiveDirectiveCode">Su código personal de Directiva.</string>

@@ -16,14 +16,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicText
-import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerColors
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenuItem
@@ -37,7 +35,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
@@ -69,10 +66,10 @@ import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Locale
-import com.example.juntavecinos.validation.DescriptionError
+import com.example.juntavecinos.validation.EventDescriptionError
+import com.example.juntavecinos.validation.EventScheduleError
 import com.example.juntavecinos.validation.EventTitleError
 import com.example.juntavecinos.validation.EventValidator
-import com.example.juntavecinos.validation.ScheduleError
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -89,7 +86,10 @@ fun NeighborReserveForm(
     ) -> Unit = { _, _, _, _, _, _ -> }
 ) {
     var title by remember { mutableStateOf("") } // between 6 and 40
-    val titleError = EventValidator.validateTitle(title)
+    var titleError by remember { mutableStateOf(EventTitleError.NONE) }
+    var descriptionError by remember {mutableStateOf(EventDescriptionError.NONE)}
+    var scheduleError by remember { mutableStateOf(EventScheduleError.NONE) }
+
     var description by remember { mutableStateOf("") } // up to 150
     var selectedEventType by remember { mutableStateOf(EventType.OTHER) }
     var expandedDropdown by remember { mutableStateOf(false) }
@@ -98,12 +98,11 @@ fun NeighborReserveForm(
     var startTime by remember { mutableStateOf(LocalTime.of(9, 0)) }
     var endTime by remember { mutableStateOf(LocalTime.of(11, 0)) }
 
-    var showDatePicker by remember { mutableStateOf(true) }
+    var showDatePicker by remember { mutableStateOf(false) }
     var showStartTimePicker by remember { mutableStateOf(false) }
     var showEndTimePicker by remember { mutableStateOf(false) }
 
-    val descriptionError = EventValidator.validateDescription(description)
-    val scheduleError    = EventValidator.validateSchedule(startTime, endTime)
+
 
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
@@ -220,12 +219,12 @@ fun NeighborReserveForm(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RectangleShape,
                 singleLine = true,
-                isError = titleError != null,
+                isError = titleError != EventTitleError.NONE,
                 supportingText = {
                     when (titleError) {
                         EventTitleError.TOO_SHORT -> Text("Mínimo ${EventValidator.TITLE_MIN_LENGTH} caracteres")
                         EventTitleError.TOO_LONG  -> Text("Máximo ${EventValidator.TITLE_MAX_LENGTH} caracteres")
-                        null -> {}
+                        else -> {}
                     }
                 }
             )
@@ -247,12 +246,12 @@ fun NeighborReserveForm(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RectangleShape,
                 minLines = 3,
-                isError = descriptionError != null,
+                isError = descriptionError != EventDescriptionError.NONE,
                 supportingText = {
                     when (descriptionError) {
-                        DescriptionError.NONE_AT_ALL -> Text("Escribe una descripción")
-                        DescriptionError.TOO_LONG    -> Text("Máximo ${EventValidator.DESCRIPTION_MAX_LENGTH} caracteres")
-                        null -> {}
+                        EventDescriptionError.NONE_AT_ALL -> Text("Escribe una descripción")
+                        EventDescriptionError.TOO_LONG    -> Text("Máximo ${EventValidator.DESCRIPTION_MAX_LENGTH} caracteres")
+                        else -> {}
                     }
                 }
             )
@@ -302,10 +301,14 @@ fun NeighborReserveForm(
                 .fillMaxWidth()
                 .height(56.dp),
             onClick = {
+                titleError = EventValidator.validateTitle(title)
+                descriptionError = EventValidator.validateDescription(description)
+                scheduleError = EventValidator.validateSchedule(startTime, endTime)
+
                 when {
-                    titleError != null -> errorMessage = "Revisa el título"
-                    descriptionError != null -> errorMessage = "Revisa la descripción"
-                    scheduleError != null -> errorMessage = "La hora de fin no puede ser anterior a la de inicio"
+                    titleError != EventTitleError.NONE -> errorMessage = "Revisa el título"
+                    descriptionError != EventDescriptionError.NONE -> errorMessage = "Revisa la descripción"
+                    scheduleError != EventScheduleError.NONE -> errorMessage = "La hora de fin no puede ser anterior a la de inicio"
                     else -> onReserveSubmit(
                         title,
                         description,
@@ -331,10 +334,10 @@ fun NeighborReserveForm(
         errorMessage?.let { message ->
             AlertDialog(
                 onDismissRequest = { errorMessage = null },
-                title = { Text("¡¡¡¡ AVISO !!!!") },
+                title = { Text(stringResource(R.string.headerMessageWarning)) },
                 text = { Text(message) },
                 confirmButton = {
-                    TextButton(onClick = { errorMessage = null }) { Text("OK") }
+                    TextButton(onClick = { errorMessage = null }) { Text(stringResource(R.string.ok)) }
                 }
             )
         }
