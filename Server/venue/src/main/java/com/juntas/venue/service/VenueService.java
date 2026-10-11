@@ -14,7 +14,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 public class VenueService {
-
     private final VenueRepository venueRepo;
     private final VenueMapper mapper;
 

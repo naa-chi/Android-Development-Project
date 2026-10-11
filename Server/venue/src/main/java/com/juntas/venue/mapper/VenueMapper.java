@@ -15,7 +15,7 @@ public class VenueMapper {
                 entity.getType(),
                 entity.getPricePerHour(),
                 entity.getCapacity(),
-                entity.getNeighbourhoodId()
+                entity.getNeighborhoodId()
         );
     }
 
@@ -25,7 +25,7 @@ public class VenueMapper {
         v.setType(req.type());
         v.setPricePerHour(req.pricePerHour());
         v.setCapacity(req.capacity());
-        v.setNeighbourhoodId(req.neighbourhoodId());
+        v.setNeighborhoodId(req.neighbourhoodId());
         return v;
     }
 
@@ -34,6 +34,6 @@ public class VenueMapper {
         if (req.type() != null) target.setType(req.type());
         if (req.pricePerHour() != null) target.setPricePerHour(req.pricePerHour());
         if (req.capacity() != null) target.setCapacity(req.capacity());
-        if (req.neighbourhoodId() != null) target.setNeighbourhoodId(req.neighbourhoodId());
+        if (req.neighbourhoodId() != null) target.setNeighborhoodId(req.neighbourhoodId());
     }
 }

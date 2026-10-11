@@ -38,7 +38,7 @@ public class VenueModel {
 
     @NotNull
     @Column(nullable = false, unique = false)
-    private Long neighbourhoodId;
+    private Long neighborhoodId;
 
     @Min(value=1)
     @Column(unique=false, nullable = false)
