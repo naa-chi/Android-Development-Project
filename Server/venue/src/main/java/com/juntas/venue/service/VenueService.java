@@ -4,11 +4,14 @@ import com.juntas.venue.client.NeighborhoodClient;
 import com.juntas.venue.dto.CreateVenueRequest;
 import com.juntas.venue.dto.UpdateVenueRequest;
 import com.juntas.venue.dto.VenueResponse;
+import com.juntas.venue.exception.NeighborhoodNotFoundException;
 import com.juntas.venue.exception.NeighborhoodServiceUnavailableException;
 import com.juntas.venue.exception.VenueNotFoundException;
 import com.juntas.venue.mapper.VenueMapper;
 import com.juntas.venue.model.VenueModel;
 import com.juntas.venue.repository.VenueRepository;
+
+import feign.FeignException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,11 +26,10 @@ public class VenueService {
     private final VenueRepository venueRepo;
     private final VenueMapper mapper;
     private final NeighborhoodClient neighborhoodClient;
-    
+
     @CircuitBreaker(name = "neighborhoods", fallbackMethod = "createFallback")
     public VenueResponse create(CreateVenueRequest req) {
-        neighborhoodClient.getById(req.neighbourhoodId());
-
+        validateNeighborhoodExists(req.neighbourhoodId());
         VenueModel saved = venueRepo.save(mapper.toEntity(req));
         return mapper.toResponse(saved);
     }
@@ -50,9 +52,10 @@ public class VenueService {
     public VenueResponse update(Long id, UpdateVenueRequest req) {
         VenueModel existing = venueRepo.findById(id)
                 .orElseThrow(() -> new VenueNotFoundException(id));
+
         if (req.neighbourhoodId() != null
                 && !req.neighbourhoodId().equals(existing.getNeighborhoodId())) {
-            neighborhoodClient.getById(req.neighbourhoodId());
+            validateNeighborhoodExists(req.neighbourhoodId());
         }
 
         mapper.applyUpdate(req, existing);
@@ -64,6 +67,14 @@ public class VenueService {
             throw new VenueNotFoundException(id);
         }
         venueRepo.deleteById(id);
+    }
+
+    private void validateNeighborhoodExists(Long id) {
+        try {
+            neighborhoodClient.getById(id);
+        } catch (FeignException.NotFound e) {
+            throw new NeighborhoodNotFoundException(id);
+        }
     }
 
     private VenueResponse createFallback(CreateVenueRequest req, Throwable t) {
