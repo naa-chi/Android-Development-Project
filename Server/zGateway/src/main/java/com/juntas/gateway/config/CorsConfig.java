@@ -1,4 +1,4 @@
-package main.java.com.juntas.gateway.config; //Why must you hurt mr in this way
+package com.juntas.gateway.config; //Why must you hurt mr in this way
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -15,7 +15,7 @@ LOG_DIR = SCRIPT_DIR / "zz_logs"
 # (display name, directory name, port, grace seconds after port opens)
 SERVICES = [
     ("Discovery",     "zDiscovery",         8761, 15),
-    #("Gateway",       "zGateway",               8080,  5),
+    ("Gateway",       "zGateway",               8080,  5),
     ("Neighborhoods", "neighborhood",  8387,  5),
     ("Venues",        "venue",         8386,  5)# ,
     #("Events",        "event-service",         8084,  5),

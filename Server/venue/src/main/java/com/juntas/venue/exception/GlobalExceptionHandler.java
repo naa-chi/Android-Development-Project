@@ -62,4 +62,11 @@ public class GlobalExceptionHandler {
                                   "Ha ocurrido un error inesperado",
                                   req.getRequestURI()));
     }
+    @ExceptionHandler(NeighborhoodServiceUnavailableException.class)
+        public ResponseEntity<ApiError> handleNeighborhoodDown(
+                NeighborhoodServiceUnavailableException ex, HttpServletRequest req) {
+        return ResponseEntity
+                .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(ApiError.of(503, "Service Unavailable", ex.getMessage(), req.getRequestURI()));
+        }
 }
