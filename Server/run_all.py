@@ -17,8 +17,8 @@ SERVICES = [
     ("Discovery",     "zDiscovery",         8761, 15),
     ("Gateway",       "zGateway",               8080,  5),
     ("Neighborhoods", "neighborhood",  8387,  5),
-    ("Venues",        "venue",         8386,  5)# ,
-    #("Events",        "event-service",         8084,  5),
+    ("Venues",        "venue",         8386,  5),
+    ("Events",        "event-service",         8389,  5),
     #("Costs",         "cost-service",          8085,  5),
     #("Users",         "user-service",          8083,  5),
 ]
@@ -344,7 +344,7 @@ def main() -> None:
         print("  Venues:        http://localhost:8386/api/v1/venues")
         print("  Neighborhoods: http://localhost:8385/api/v1/neighborhoods")
         #print("  Users:         http://localhost:8083/api/v1/users")
-        #print("  Events:        http://localhost:8084/api/v1/events")
+        print("  Events:        http://localhost:8389/api/v1/events")
         #print("  Costs:         http://localhost:8085/api/v1/costs")
         print()
         print(f"  Per-service logs: {LOG_DIR}")
