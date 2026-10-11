@@ -30,10 +30,10 @@ public class VenueMapper {
     }
 
     public void applyUpdate(UpdateVenueRequest req, VenueModel target) {
-        if (req.name() != null)             target.setVenueName(req.name());
-        if (req.type() != null)             target.setType(req.type());
-        if (req.pricePerHour() != null)     target.setPricePerHour(req.pricePerHour());
-        if (req.capacity() != null)         target.setCapacity(req.capacity());
-        if (req.neighbourhoodId() != null)  target.setNeighbourhoodId(req.neighbourhoodId());
+        if (req.name() != null) target.setVenueName(req.name());
+        if (req.type() != null) target.setType(req.type());
+        if (req.pricePerHour() != null) target.setPricePerHour(req.pricePerHour());
+        if (req.capacity() != null) target.setCapacity(req.capacity());
+        if (req.neighbourhoodId() != null) target.setNeighbourhoodId(req.neighbourhoodId());
     }
 }
