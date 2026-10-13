@@ -68,4 +68,10 @@
     <string name="bottombarnavMoney">Resumen</string>
     <string name="bottombarnavCalendar">Solicitar</string>
     <string name="bottombarnavProfile">Cuenta</string>
+
+
+    <string name="checkTitle">Revisa el título</string>
+    <string name="checkDescription">Revisa la descripción</string>
+    <string name="invalidDate">La hora de fin no puede ser anterior a la de inicio</string>
+    <string name="dateOutOfBounds">No puede reservar un evento en una fecha ya pasada</string>
 </resources>

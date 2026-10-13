@@ -104,7 +104,7 @@ fun NeighborReserveForm(
 
 
 
-    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var errorMessage by remember { mutableStateOf<Int?>(null) }
 
     val datePickerState = rememberDatePickerState(
         initialSelectedDateMillis = dateSelected.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
@@ -306,9 +306,10 @@ fun NeighborReserveForm(
                 scheduleError = EventValidator.validateSchedule(startTime, endTime)
 
                 when {
-                    titleError != EventTitleError.NONE -> errorMessage = "Revisa el título"
-                    descriptionError != EventDescriptionError.NONE -> errorMessage = "Revisa la descripción"
-                    scheduleError != EventScheduleError.NONE -> errorMessage = "La hora de fin no puede ser anterior a la de inicio"
+                    titleError != EventTitleError.NONE -> errorMessage = R.string.checkTitle
+                    descriptionError != EventDescriptionError.NONE -> errorMessage = R.string.checkDescription
+                    scheduleError != EventScheduleError.NONE -> errorMessage = R.string.invalidDate
+                    currentDate < LocalDate.now() -> errorMessage = R.string.dateOutOfBounds
                     else -> onReserveSubmit(
                         title,
                         description,
@@ -331,11 +332,11 @@ fun NeighborReserveForm(
             )
         }
 
-        errorMessage?.let { message ->
+        errorMessage?.let { value ->
             AlertDialog(
                 onDismissRequest = { errorMessage = null },
                 title = { Text(stringResource(R.string.headerMessageWarning)) },
-                text = { Text(message) },
+                text = { Text(stringResource(value)) },
                 confirmButton = {
                     TextButton(onClick = { errorMessage = null }) { Text(stringResource(R.string.ok)) }
                 }
