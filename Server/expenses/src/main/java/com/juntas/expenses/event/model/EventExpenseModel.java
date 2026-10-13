@@ -33,5 +33,5 @@ public class EventExpenseModel {
     private String forEmail; 
 
     @Column(nullable = false)
-    private Long neighbourhoodId;
+    private Long neighborhoodId;
 }

@@ -1,4 +1,4 @@
-package com.juntas.eureka; //Why must you hurt me in this way
+package com.juntas.discovery; //Why must you hurt me in this way
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
