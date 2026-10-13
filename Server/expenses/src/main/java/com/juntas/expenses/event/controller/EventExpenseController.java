@@ -16,7 +16,6 @@ import java.util.List;
 @RequestMapping("/api/v1/event-expenses")
 @RequiredArgsConstructor
 public class EventExpenseController {
-
     private final EventExpenseService service;
 
     @PostMapping
@@ -35,12 +34,12 @@ public class EventExpenseController {
         return service.findAll();
     }
 
-    @GetMapping("/by-neighborhood/{neighborhoodId}")
+    @GetMapping("/neighborhood/{neighborhoodId}")
     public List<EventExpenseResponse> getByNeighborhood(@PathVariable Long neighborhoodId) {
         return service.findByNeighborhood(neighborhoodId);
     }
 
-    @GetMapping("/by-user/{userId}")
+    @GetMapping("/user/{userId}")
     public List<EventExpenseResponse> getByUser(@PathVariable Long userId) {
         return service.findByUser(userId);
     }
