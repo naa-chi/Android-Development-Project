@@ -86,8 +86,10 @@ fun NeighborReserveForm(
         eventType: EventType,
         date: LocalDate,
         startTime: LocalTime,
-        endTime: LocalTime
-    ) -> Unit = { _, _, _, _, _, _ -> }
+        endTime: LocalTime,
+        clientLowerBound: Int,
+        clientUpperBound: Int
+    ) -> Unit = { _, _, _, _, _, _, _, _ -> }
 ) {
     var title by remember { mutableStateOf("") } // between 6 and 40
     var titleError by remember { mutableStateOf(EventTitleError.NONE) }
@@ -369,19 +371,26 @@ fun NeighborReserveForm(
                 titleError = EventValidator.validateTitle(title)
                 descriptionError = EventValidator.validateDescription(description)
                 scheduleError = EventValidator.validateSchedule(startTime, endTime)
+                clientLowerBoundError = EventValidator.validateMinClient(clientLowerBound.toInt())
+                clientUpperBoundError = EventValidator.validateMaxClient(clientLowerBound.toInt(), clientUpperBound.toInt())
+
 
                 when {
                     titleError != EventTitleError.NONE -> errorMessage = R.string.checkTitle
                     descriptionError != EventDescriptionError.NONE -> errorMessage = R.string.checkDescription
                     scheduleError != EventScheduleError.NONE -> errorMessage = R.string.invalidDate
                     currentDate < LocalDate.now() -> errorMessage = R.string.dateOutOfBounds
+                    clientLowerBoundError != ClientQtyError.NONE -> errorMessage = R.string.checkMinBound
+                    clientUpperBoundError != ClientQtyError.NONE -> errorMessage = R.string.checkMaxBound
                     else -> onReserveSubmit(
                         title,
                         description,
                         selectedEventType,
                         currentDate,
                         EventValidator.effectiveStart(startTime),
-                        endTime
+                        endTime,
+                        clientLowerBound.toInt(),
+                        clientUpperBound.toInt()
                     )
                 }
             },

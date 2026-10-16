@@ -40,4 +40,9 @@ object EventValidator {
         minClient < 0 -> ClientQtyError.SMALLER_THAN_ZERO
         else -> ClientQtyError.NONE
     }
+
+    fun validateMaxClient(minClient: Int, maxClient: Int): ClientQtyError = when {
+        maxClient < minClient -> ClientQtyError.MIN_MORE_THAN_MAX
+        else -> ClientQtyError.NONE
+    }
 }
