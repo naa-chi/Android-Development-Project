@@ -56,6 +56,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.text.input.KeyboardType
 import com.example.juntavecinos.Model.EventType
 import com.example.juntavecinos.R
 import com.example.juntavecinos.ui.theme.JuntaVecinosTheme
@@ -66,10 +67,13 @@ import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import androidx.compose.foundation.text.KeyboardOptions
 import com.example.juntavecinos.validation.EventDescriptionError
 import com.example.juntavecinos.validation.EventScheduleError
 import com.example.juntavecinos.validation.EventTitleError
+import com.example.juntavecinos.validation.ClientQtyError
 import com.example.juntavecinos.validation.EventValidator
+
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -89,10 +93,14 @@ fun NeighborReserveForm(
     var titleError by remember { mutableStateOf(EventTitleError.NONE) }
     var descriptionError by remember {mutableStateOf(EventDescriptionError.NONE)}
     var scheduleError by remember { mutableStateOf(EventScheduleError.NONE) }
+    var clientLowerBoundError by remember { mutableStateOf(ClientQtyError.NONE)}
+    var clientUpperBoundError by remember { mutableStateOf(ClientQtyError.NONE)}
 
     var description by remember { mutableStateOf("") } // up to 150
     var selectedEventType by remember { mutableStateOf(EventType.OTHER) }
     var expandedDropdown by remember { mutableStateOf(false) }
+    var clientLowerBound by remember { mutableStateOf("") } // Transform to an int later
+    var clientUpperBound by remember { mutableStateOf("") } // Got both ends
 
     var currentDate by remember { mutableStateOf(dateSelected) }
     var startTime by remember { mutableStateOf(LocalTime.of(9, 0)) }
@@ -230,12 +238,69 @@ fun NeighborReserveForm(
             )
 
             BasicText(
+                text = stringResource(R.string.minBoundInvites),
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            )
+
+            OutlinedTextField(
+                value = clientLowerBound,
+                onValueChange = { newValue ->
+                    if (newValue.isEmpty() || newValue.toIntOrNull() != null) {
+                        clientLowerBound = newValue
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RectangleShape,
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                isError = clientLowerBoundError != ClientQtyError.NONE,
+                supportingText = {
+                    when (clientLowerBoundError) {
+                        ClientQtyError.SMALLER_THAN_ZERO -> Text("Debe ser mayor que 0 obv")
+                        else -> {}
+                    }
+                }
+            )
+
+            BasicText(
+                text = stringResource(R.string.maxBoundInvites),
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            )
+
+            OutlinedTextField(
+                value = clientUpperBound,
+                onValueChange = { newValue ->
+                    if (newValue.isEmpty() || newValue.toIntOrNull() != null) {
+                        clientUpperBound = newValue
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RectangleShape,
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                isError = clientUpperBoundError != ClientQtyError.NONE,
+                supportingText = {
+                    when (clientUpperBoundError) {
+                        ClientQtyError.SMALLER_THAN_ZERO -> Text("Debe ser mayor que 0 obv")
+                        else -> {}
+                    }
+                }
+            )
+
+            BasicText(
                 text = stringResource(R.string.calendarEventMotive),
                 style = TextStyle(
                     fontSize = 20.sp,
                     color = MaterialTheme.colorScheme.onBackground
                 )
             )
+
             OutlinedTextField(
                 value = description,
                 onValueChange = { newDescription ->
