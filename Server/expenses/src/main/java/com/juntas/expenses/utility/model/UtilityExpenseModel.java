@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
-@AllArgsConstructor
+@AllArgsConstructor // PLEASE downgrade to Language Support For Java(TM) to 1.56.0. It breaks on 1.57.0. I hate it
 @NoArgsConstructor
 @Getter
 @Setter

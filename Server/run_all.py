@@ -18,8 +18,8 @@ SERVICES = [
     ("Gateway",       "zGateway",               8080,  5),
     ("Neighborhoods", "neighborhood",  8387,  5),
     ("Venues",        "venue",         8386,  5),
-    ("Events",        "event-service",         8389,  5),
-    #("Costs",         "cost-service",          8085,  5),
+    ("Events",        "event",         8389,  5),
+    ("Expenses",         "expenses",          8390,  5),
     #("Users",         "user-service",          8083,  5),
 ]
 

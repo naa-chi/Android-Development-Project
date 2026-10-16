@@ -1,9 +1,9 @@
 package com.juntas.expenses.utility.service;
 
+import com.juntas.expenses.exception.UtilityExpenseNotFoundException;
 import com.juntas.expenses.utility.dto.CreateUtilityExpenseRequest;
 import com.juntas.expenses.utility.dto.UpdateUtilityExpenseRequest;
 import com.juntas.expenses.utility.dto.UtilityExpenseResponse;
-import com.juntas.expenses.utility.exception.UtilityExpenseNotFoundException;
 import com.juntas.expenses.utility.mapper.UtilityExpenseMapper;
 import com.juntas.expenses.utility.model.UtilityExpenseModel;
 import com.juntas.expenses.utility.repository.UtilityExpenseRepository;
