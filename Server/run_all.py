@@ -1,3 +1,14 @@
+#!/usr/bin/env python3
+"""
+Start all Juntas Vecinos microservices in order.
+Loads .env from the project root and passes its variables to each service.
+
+Usage:
+    python run_all.py
+
+Press Ctrl+C to stop everything.
+"""
+
 import os
 import re
 import socket
@@ -8,23 +19,24 @@ from datetime import datetime
 from pathlib import Path
 
 # ─── CONFIG ──────────────────────────────────────────────────────────
-SCRIPT_DIR = Path(__file__).resolve().parent #DeepSeek V-4.1 generated runner, CBA to do this by hand
+SCRIPT_DIR = Path(__file__).resolve().parent
 BASE_DIR = SCRIPT_DIR
-LOG_DIR = SCRIPT_DIR / "zz_logs"
+LOG_DIR = SCRIPT_DIR / "logs"
+ENV_FILE = SCRIPT_DIR / ".env"
 
 # (display name, directory name, port, grace seconds after port opens)
 SERVICES = [
-    ("Discovery",     "zDiscovery",         8761, 15),
-    ("Gateway",       "zGateway",               8080,  5),
+    ("Discovery",     "eureka-server",         8761, 15),
+    ("Gateway",       "gateway",               8080,  5),
     ("Neighborhoods", "neighborhood",  8387,  5),
     ("Venues",        "venue",         8386,  5),
     ("Events",        "event",         8389,  5),
-    ("Expenses",         "expenses",          8390,  5),
-    #("Users",         "user-service",          8083,  5),
+    ("Expenses",      "expenses",       8390,  5),
+    ("Users",         "users",          8391,  5),
 ]
 
-PORT_OPEN_TIMEOUT = 90       # seconds to wait for a port to open
-TAIL_LINES_ON_FAILURE = 100  # how many log lines to print on failure
+PORT_OPEN_TIMEOUT = 90
+TAIL_LINES_ON_FAILURE = 100
 # ─────────────────────────────────────────────────────────────────────
 
 IS_WINDOWS = sys.platform == "win32"
@@ -42,7 +54,6 @@ def log(msg: str, indent: int = 0) -> None:
 
 
 def port_is_free(port: int, host: str = "127.0.0.1") -> bool:
-    """True if nothing is currently bound to the port."""
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         try:
             s.bind((host, port))
@@ -52,7 +63,6 @@ def port_is_free(port: int, host: str = "127.0.0.1") -> bool:
 
 
 def port_is_open(port: int, host: str = "127.0.0.1", timeout: float = 0.5) -> bool:
-    """True if something is listening on the port."""
     try:
         with socket.create_connection((host, port), timeout=timeout):
             return True
@@ -61,7 +71,6 @@ def port_is_open(port: int, host: str = "127.0.0.1", timeout: float = 0.5) -> bo
 
 
 def tail(path: Path, n: int) -> str:
-    """Return the last n lines of a file, or '' if it doesn't exist."""
     if not path.exists():
         return ""
     try:
@@ -73,10 +82,9 @@ def tail(path: Path, n: int) -> str:
 
 
 def scan_log_for_markers(path: Path) -> dict:
-    """Look for interesting lines in a service's log so we can report status."""
     markers = {
-        "started": False,          # Spring Boot finished starting
-        "tomcat": False,           # HTTP server is listening
+        "started": False,
+        "tomcat": False,
         "eureka_registered": False,
         "db_ok": False,
         "errors": [],
@@ -102,10 +110,48 @@ def scan_log_for_markers(path: Path) -> dict:
     return markers
 
 
+# ─── .env loader ─────────────────────────────────────────────────────
+
+def load_env() -> None:
+    """Read .env from the project root and set each key in os.environ.
+
+    Lines like `JWT_SECRET=abc123` become environment variables for this
+    process, which subprocess.Popen children inherit.
+    Supports:
+      - blank lines and #comments
+      - `export KEY=value` prefix
+      - optional quotes around values
+    """
+    if not ENV_FILE.exists():
+        log(f"No .env at {ENV_FILE} — using inherited environment only.", indent=1)
+        return
+
+    loaded = []
+    for raw in ENV_FILE.read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        if line.startswith("export "):
+            line = line[len("export "):].strip()
+        key, sep, value = line.partition("=")
+        if not sep:
+            continue
+        key = key.strip()
+        value = value.strip().strip('"').strip("'")
+        if not key:
+            continue
+        os.environ[key] = value
+        loaded.append(key)
+
+    if loaded:
+        log(f"Loaded {len(loaded)} var(s) from .env: {', '.join(loaded)}", indent=1)
+    else:
+        log(".env exists but no variables were read.", indent=1)
+
+
 # ─── Preflight ───────────────────────────────────────────────────────
 
 def preflight() -> list[str]:
-    """Return a list of warnings about the environment. Empty = all good."""
     warnings = []
 
     # Java
@@ -113,13 +159,26 @@ def preflight() -> list[str]:
         r = subprocess.run(["java", "-version"], capture_output=True, text=True)
         out = (r.stderr or "") + (r.stdout or "")
         m = re.search(r'version "([^"]+)"', out)
-        if m:
-            log(f"Java version: {m.group(1)}")
-        else:
-            log("Java version: unknown")
+        log(f"Java version: {m.group(1)}" if m else "Java version: unknown")
     except FileNotFoundError:
         warnings.append("`java` not found on PATH. Spring Boot services won't start.")
         log("! java not found on PATH", indent=1)
+
+    # .env presence
+    if ENV_FILE.exists():
+        log(f".env found at {ENV_FILE}")
+    else:
+        log(f"! .env missing at {ENV_FILE} — JWT_SECRET may be undefined", indent=1)
+
+    # JWT_SECRET
+    if "JWT_SECRET" not in os.environ:
+        warnings.append(
+            "JWT_SECRET not set (neither in .env nor in the shell environment). "
+            "Services using ${JWT_SECRET} without a fallback will fail to start."
+        )
+        log("! JWT_SECRET is not set", indent=1)
+    else:
+        log(f"JWT_SECRET: set ({len(os.environ['JWT_SECRET'])} chars)")
 
     # Base directory
     if not BASE_DIR.exists():
@@ -135,9 +194,7 @@ def preflight() -> list[str]:
             log(f"! {name}: directory missing: {d}", indent=1)
             continue
         if not (d / MVN).exists() and not (d / "mvnw").exists():
-            warnings.append(
-                f"{name}: no maven wrapper in {d} (expected {MVN} or mvnw)"
-            )
+            warnings.append(f"{name}: no maven wrapper in {d} (expected {MVN} or mvnw)")
             log(f"! {name}: no maven wrapper in {d}", indent=1)
 
     # Ports
@@ -173,6 +230,7 @@ def launch(name: str, directory: str, port: int, grace: int,
         "shell": True,
         "stdout": fh,
         "stderr": subprocess.STDOUT,
+        "env": os.environ.copy(),   # inherit + our .env values
     }
     if IS_WINDOWS:
         kwargs["creationflags"] = subprocess.CREATE_NEW_PROCESS_GROUP
@@ -181,7 +239,6 @@ def launch(name: str, directory: str, port: int, grace: int,
     proc = subprocess.Popen(cmd, **kwargs)
     procs.append({"name": name, "proc": proc, "port": port, "log": log_path})
 
-    # Wait for the port, while checking the process is still alive.
     start = time.time()
     while time.time() - start < PORT_OPEN_TIMEOUT:
         if proc.poll() is not None:
@@ -214,6 +271,11 @@ def print_failure_report(failed_name: str, procs: list,
     print(f"  Python:      {sys.version.split()[0]}")
     print(f"  BASE_DIR:    {BASE_DIR}")
     print(f"  LOG_DIR:     {LOG_DIR}")
+    print(f"  .env:        {ENV_FILE} (exists: {ENV_FILE.exists()})")
+    if "JWT_SECRET" in os.environ:
+        print(f"  JWT_SECRET:  set ({len(os.environ['JWT_SECRET'])} chars)")
+    else:
+        print(f"  JWT_SECRET:  NOT SET")
     if env_warnings:
         print("  Warnings:")
         for w in env_warnings:
@@ -221,7 +283,6 @@ def print_failure_report(failed_name: str, procs: list,
     else:
         print("  (no preflight warnings)")
 
-    # Find the failed process entry
     entry = next((p for p in procs if p["name"] == failed_name), None)
 
     print("\n--- Status of all services ---")
@@ -230,7 +291,7 @@ def print_failure_report(failed_name: str, procs: list,
         listening = "listening" if port_is_open(p["port"]) else "NOT listening"
         markers = scan_log_for_markers(p["log"])
         eureka = "eureka-ok" if markers["eureka_registered"] else "NO-EUREKA"
-        db = "db-ok" if markers["db_ok"] else ("no-db" if markers["db_ok"] is False else "?")
+        db = "db-ok" if markers["db_ok"] else "no-db"
         print(f"  {p['name']:<14} port {p['port']:<5} {status:<16} {listening:<14} {eureka:<12} {db}")
 
     if entry is None:
@@ -241,7 +302,6 @@ def print_failure_report(failed_name: str, procs: list,
     print(f"\n--- Last {TAIL_LINES_ON_FAILURE} lines of {entry['log'].name} ---")
     print(tail(entry["log"], TAIL_LINES_ON_FAILURE))
 
-    # Highlight likely culprit
     markers = scan_log_for_markers(entry["log"])
     if markers["errors"]:
         print(f"\n--- Detected {len(markers['errors'])} error/stack lines (last 20) ---")
@@ -249,16 +309,19 @@ def print_failure_report(failed_name: str, procs: list,
             print("  " + line)
 
     print("\n--- Suggested next steps ---")
-    if "Caused by: java.net.BindException" in tail(entry["log"], 2000):
+    recent = tail(entry["log"], 2000)
+    if "Caused by: java.net.BindException" in recent:
         print("  • Port already in use. Kill the old process or change the port.")
-    if "Communications link failure" in tail(entry["log"], 2000) or \
-       "Access denied for user" in tail(entry["log"], 2000):
+    if "Communications link failure" in recent or "Access denied for user" in recent:
         print("  • Database problem. Check application.properties credentials and that MySQL is up.")
-    if "No instances available" in tail(entry["log"], 2000):
+    if "No instances available" in recent:
         print("  • A Feign call couldn't find the target. Is the target service registered in Eureka?")
-    if "Cannot load environment" in tail(entry["log"], 2000) or \
-       "NoClassDefFoundError" in tail(entry["log"], 2000):
+    if "Cannot load environment" in recent or "NoClassDefFoundError" in recent:
         print("  • Spring Boot / Spring Cloud version mismatch. Check the compatibility matrix.")
+    if "WeakKeyException" in recent or "key byte array is" in recent:
+        print("  • JWT secret is too short. HS256 requires at least 32 bytes.")
+    if "Could not resolve placeholder 'JWT_SECRET'" in recent:
+        print("  • JWT_SECRET is not set. Add it to .env at the project root.")
     print("\nPaste this whole block when asking for help.\n")
     print(bar + "\n")
 
@@ -314,6 +377,10 @@ def main() -> None:
     print(f"Juntas Vecinos — backend launcher — {datetime.now().isoformat()}")
     print("=" * 72)
 
+    log("Loading .env...")
+    load_env()
+    print()
+
     log("Preflight checks...")
     warnings = preflight()
     if warnings:
@@ -338,15 +405,6 @@ def main() -> None:
 
         print("=" * 72)
         print("All services started successfully.")
-        print("=" * 72)
-        print("  Eureka:        http://localhost:8761")
-        print("  Gateway:       http://localhost:8080")
-        print("  Venues:        http://localhost:8386/api/v1/venues")
-        print("  Neighborhoods: http://localhost:8385/api/v1/neighborhoods")
-        #print("  Users:         http://localhost:8083/api/v1/users")
-        print("  Events:        http://localhost:8389/api/v1/events")
-        #print("  Costs:         http://localhost:8085/api/v1/costs")
-        print()
         print(f"  Per-service logs: {LOG_DIR}")
         print("  Press Ctrl+C to stop everything.")
         print()
