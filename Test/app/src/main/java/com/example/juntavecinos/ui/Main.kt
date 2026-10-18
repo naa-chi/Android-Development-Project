@@ -220,6 +220,7 @@ fun Main(
                 NeighborDayOverview(
                     selectedDate = selectedDate,
                     events = listOf(
+                        /*
                         DayTimelineEvent(
                             title = "Reunión de Seguridad",
                             hoster = "directiva@vecinos.cl",
@@ -238,6 +239,7 @@ fun Main(
                             startTime = LocalTime.of(19, 0),
                             endTime = LocalTime.of(21, 0)
                         )
+                     */
                     ),
                     {
                         navController.navigate("${Navigation.NeighborReserveForm.name}/$selectedDate") {

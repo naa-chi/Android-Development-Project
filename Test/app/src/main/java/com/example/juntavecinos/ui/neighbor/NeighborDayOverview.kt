@@ -151,48 +151,13 @@ fun NeighborDayOverview(
                     val shape = RoundedCornerShape(8.dp)
                     val timeSpanText = "${event.startTime.format(DateTimeFormatter.ofPattern("HH:mm"))} - ${event.endTime.format(DateTimeFormatter.ofPattern("HH:mm"))}"
 
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 54.dp, end = 4.dp)
-                            .offset(y = topOffset)
-                            .height(cardHeight)
-                            .clip(shape)
-                            .background(ColorFull.copy(alpha = 0.15f))
-                            .border(1.5.dp, ColorFull, shape)
-                            .padding(8.dp)
-                    ) {
-                        Column(
-                            modifier = Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                                BasicText(
-                                    text = event.title,
-                                    style = TextStyle(
-                                        fontSize = 14.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.onBackground
-                                    )
-                                )
-                                BasicText(
-                                    text = "Organiza: ${event.hoster}",
-                                    style = TextStyle(
-                                        fontSize = 12.sp,
-                                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
-                                    )
-                                )
-                            }
-                            BasicText(
-                                text = timeSpanText,
-                                style = TextStyle(
-                                    fontSize = 11.sp,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = ColorFull
-                                )
-                            )
-                        }
-                    }
+                    NeighborDayEventData(
+                        topOffset,
+                        cardHeight,
+                        shape,
+                        event,
+                        timeSpanText
+                    )
                 }
             }
         }
@@ -223,26 +188,7 @@ fun PreviewDayOverview() {
     JuntaVecinosTheme {
         NeighborDayOverview(
             selectedDate = LocalDate.now(),
-            events = listOf(
-                DayTimelineEvent(
-                    title = "Reunión de Seguridad",
-                    hoster = "directiva@vecinos.cl",
-                    startTime = LocalTime.of(9, 0),
-                    endTime = LocalTime.of(11, 0)
-                ),
-                DayTimelineEvent(
-                    title = "Cumpleaños Comunitario",
-                    hoster = "vecino12@gmail.com",
-                    startTime = LocalTime.of(14, 0),
-                    endTime = LocalTime.of(17, 30)
-                ),
-                DayTimelineEvent(
-                    title = "Taller de Reciclaje",
-                    hoster = "tesoreria@vecinos.cl",
-                    startTime = LocalTime.of(19, 0),
-                    endTime = LocalTime.of(21, 0)
-                )
-            ),
+            events = listOf(),
             {}
         )
     }
