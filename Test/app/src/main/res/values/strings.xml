@@ -68,14 +68,18 @@
     <string name="bottombarnavMoney">Resumen</string>
     <string name="bottombarnavCalendar">Solicitar</string>
     <string name="bottombarnavProfile">Cuenta</string>
-    <string name="minBoundInvites">Minimo de invitados (estimado)</string>
-    <string name="maxBoundInvites">Maximo de invitados (estimado)</string>
+
 
     <string name="checkTitle">Revisa el título</string>
+    <string name="invalidCharactersTitle">El título contiene caracteres inválidos. Solo se permiten letras o numeros.</string>
+    <string name="invalidCharactersDescription">La descripción contiene caracteres inválidos. Solo se permiten letras o numeros.</string>
     <string name="checkDescription">Revisa la descripción</string>
     <string name="invalidDate">La hora de fin no puede ser anterior a la de inicio</string>
     <string name="dateOutOfBounds">No puede reservar un evento en una fecha ya pasada</string>
-    <string name="checkMinBound">Revisa el minimo</string>
-    <string name="checkMaxBound">Revisa el maximo</string>
 
+    <string name="checkAttendeeCount">Revise el número de asistentes</string>
+    <string name="expectedAttendees">Numero estimado de asistentes</string>
+    <string name="attendeesMoreThanZeroWarning">El número de asistentes estimados debe ser mayor o igual a 0.</string>
+    <string name="invalidAttendeeCount">El número de asistentes debe ser un valor numerico.</string>
+    <string name="moreThanMaximumAttendee">El número de asistentes es mayor al máximo posible.</string>
 </resources>

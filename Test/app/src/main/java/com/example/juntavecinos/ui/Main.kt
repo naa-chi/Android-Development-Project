@@ -268,8 +268,7 @@ fun Main(
                 val selectedDate = dateArg?.let { LocalDate.parse(it) } ?: LocalDate.now()
 
                 NeighborReserveForm(selectedDate, {
-                    _, _, _, _, _, _ ->
-
+                    _, _, _, _, _, _, _ ->
                     navController.navigate(Navigation.NeighborMoney.name) {
                         popUpTo(navController.graph.id) { inclusive = true }
                         launchSingleTop = true

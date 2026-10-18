@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -46,7 +47,6 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
@@ -68,10 +68,15 @@ import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.Slider
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.focus.focusModifier
+import androidx.compose.ui.text.style.TextDirection
 import com.example.juntavecinos.validation.EventDescriptionError
 import com.example.juntavecinos.validation.EventScheduleError
 import com.example.juntavecinos.validation.EventTitleError
-import com.example.juntavecinos.validation.ClientQtyError
+import com.example.juntavecinos.validation.AttendeesError
 import com.example.juntavecinos.validation.EventValidator
 
 
@@ -87,22 +92,20 @@ fun NeighborReserveForm(
         date: LocalDate,
         startTime: LocalTime,
         endTime: LocalTime,
-        clientLowerBound: Int,
-        clientUpperBound: Int
-    ) -> Unit = { _, _, _, _, _, _, _, _ -> }
+        attendeeCount: Int,
+    ) -> Unit = { _, _, _, _, _, _, _-> }
 ) {
     var title by remember { mutableStateOf("") } // between 6 and 40
     var titleError by remember { mutableStateOf(EventTitleError.NONE) }
     var descriptionError by remember {mutableStateOf(EventDescriptionError.NONE)}
     var scheduleError by remember { mutableStateOf(EventScheduleError.NONE) }
-    var clientLowerBoundError by remember { mutableStateOf(ClientQtyError.NONE)}
-    var clientUpperBoundError by remember { mutableStateOf(ClientQtyError.NONE)}
 
     var description by remember { mutableStateOf("") } // up to 150
     var selectedEventType by remember { mutableStateOf(EventType.OTHER) }
     var expandedDropdown by remember { mutableStateOf(false) }
-    var clientLowerBound by remember { mutableStateOf("") } // Transform to an int later
-    var clientUpperBound by remember { mutableStateOf("") } // Got both ends
+
+    var attendeesStr by remember { mutableStateOf("0") }
+    var attendeeCountState by remember { mutableStateOf(AttendeesError.NONE)}
 
     var currentDate by remember { mutableStateOf(dateSelected) }
     var startTime by remember { mutableStateOf(LocalTime.of(9, 0)) }
@@ -111,7 +114,6 @@ fun NeighborReserveForm(
     var showDatePicker by remember { mutableStateOf(false) }
     var showStartTimePicker by remember { mutableStateOf(false) }
     var showEndTimePicker by remember { mutableStateOf(false) }
-
 
 
     var errorMessage by remember { mutableStateOf<Int?>(null) }
@@ -221,6 +223,7 @@ fun NeighborReserveForm(
                     color = MaterialTheme.colorScheme.onBackground
                 )
             )
+
             OutlinedTextField(
                 value = title,
                 onValueChange = { newTitle ->
@@ -234,13 +237,14 @@ fun NeighborReserveForm(
                     when (titleError) {
                         EventTitleError.TOO_SHORT -> Text("Mínimo ${EventValidator.TITLE_MIN_LENGTH} caracteres")
                         EventTitleError.TOO_LONG  -> Text("Máximo ${EventValidator.TITLE_MAX_LENGTH} caracteres")
+                        EventTitleError.INVALID_CHARACTERS -> Text(stringResource(R.string.invalidCharactersTitle))
                         else -> {}
                     }
                 }
             )
 
             BasicText(
-                text = stringResource(R.string.minBoundInvites),
+                text = stringResource(R.string.expectedAttendees),
                 style = TextStyle(
                     fontSize = 20.sp,
                     color = MaterialTheme.colorScheme.onBackground
@@ -248,48 +252,23 @@ fun NeighborReserveForm(
             )
 
             OutlinedTextField(
-                value = clientLowerBound,
+                value = attendeesStr,
                 onValueChange = { newValue ->
-                    if (newValue.isEmpty() || newValue.toIntOrNull() != null) {
-                        clientLowerBound = newValue
+                    val num = newValue.toIntOrNull()
+                    if (num != null) {
+                        attendeesStr = num.toString()
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RectangleShape,
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                isError = clientLowerBoundError != ClientQtyError.NONE,
+                isError = attendeeCountState != AttendeesError.NONE,
                 supportingText = {
-                    when (clientLowerBoundError) {
-                        ClientQtyError.SMALLER_THAN_ZERO -> Text("Debe ser mayor que 0 obv")
-                        else -> {}
-                    }
-                }
-            )
-
-            BasicText(
-                text = stringResource(R.string.maxBoundInvites),
-                style = TextStyle(
-                    fontSize = 20.sp,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-            )
-
-            OutlinedTextField(
-                value = clientUpperBound,
-                onValueChange = { newValue ->
-                    if (newValue.isEmpty() || newValue.toIntOrNull() != null) {
-                        clientUpperBound = newValue
-                    }
-                },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RectangleShape,
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                isError = clientUpperBoundError != ClientQtyError.NONE,
-                supportingText = {
-                    when (clientUpperBoundError) {
-                        ClientQtyError.SMALLER_THAN_ZERO -> Text("Debe ser mayor que 0 obv")
+                    when (attendeeCountState) {
+                        AttendeesError.SMALLER_THAN_ZERO -> Text(stringResource(R.string.attendeesMoreThanZeroWarning))
+                        AttendeesError.INVALID_NUMBER -> Text(stringResource(R.string.invalidAttendeeCount))
+                        AttendeesError.MORE_THAN_MAXIMUM_POSSIBLE -> Text(stringResource(R.string.moreThanMaximumAttendee) + " (100)")
                         else -> {}
                     }
                 }
@@ -318,6 +297,7 @@ fun NeighborReserveForm(
                     when (descriptionError) {
                         EventDescriptionError.NONE_AT_ALL -> Text("Escribe una descripción")
                         EventDescriptionError.TOO_LONG    -> Text("Máximo ${EventValidator.DESCRIPTION_MAX_LENGTH} caracteres")
+                        EventDescriptionError.INVALID_CHARACTERS -> Text(stringResource(R.string.invalidCharactersDescription))
                         else -> {}
                     }
                 }
@@ -371,17 +351,15 @@ fun NeighborReserveForm(
                 titleError = EventValidator.validateTitle(title)
                 descriptionError = EventValidator.validateDescription(description)
                 scheduleError = EventValidator.validateSchedule(startTime, endTime)
-                clientLowerBoundError = EventValidator.validateMinClient(clientLowerBound.toInt())
-                clientUpperBoundError = EventValidator.validateMaxClient(clientLowerBound.toInt(), clientUpperBound.toInt())
+                attendeeCountState = EventValidator.validateAttendeeCount(attendeesStr)
 
-
+                println(attendeesStr.toIntOrNull())
                 when {
                     titleError != EventTitleError.NONE -> errorMessage = R.string.checkTitle
                     descriptionError != EventDescriptionError.NONE -> errorMessage = R.string.checkDescription
                     scheduleError != EventScheduleError.NONE -> errorMessage = R.string.invalidDate
                     currentDate < LocalDate.now() -> errorMessage = R.string.dateOutOfBounds
-                    clientLowerBoundError != ClientQtyError.NONE -> errorMessage = R.string.checkMinBound
-                    clientUpperBoundError != ClientQtyError.NONE -> errorMessage = R.string.checkMaxBound
+                    attendeeCountState != AttendeesError.NONE -> errorMessage = R.string.checkAttendeeCount
                     else -> onReserveSubmit(
                         title,
                         description,
@@ -389,8 +367,7 @@ fun NeighborReserveForm(
                         currentDate,
                         EventValidator.effectiveStart(startTime),
                         endTime,
-                        clientLowerBound.toInt(),
-                        clientUpperBound.toInt()
+                        attendeesStr.toInt(),
                     )
                 }
             },
