@@ -82,7 +82,7 @@
     <string name="attendeesMoreThanZeroWarning">El número de asistentes estimados debe ser mayor o igual a 0.</string>
     <string name="invalidAttendeeCount">El número de asistentes debe ser un valor numerico.</string>
     <string name="moreThanMaximumAttendee">El número de asistentes es mayor al máximo posible.</string>
-
-    <string name="eventOrganizer">Organiza:</string>
-    <string name="eventDescription">Descripción:</string>
+    <string name="ssnErrorTooShort">Rut muy corto!!</string>
+    <string name="ssnErrorTooLong">Rut muy largo!!</string>
+    <string name="ssnErrorInvalidFormat">Formato equivocado</string>
 </resources>

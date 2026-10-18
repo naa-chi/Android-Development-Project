@@ -1,6 +1,8 @@
 package com.example.juntavecinos.ui.login
 
 import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,10 +11,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,12 +33,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.juntavecinos.R
 import com.example.juntavecinos.ui.theme.JuntaVecinosTheme
-
+import com.example.juntavecinos.validation.EventValidator.validateSsn
+import com.example.juntavecinos.validation.SsnError
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NeighborLogin(
     onLogin : (ssn : String) -> Unit
 ) {
     var neighborSSN by rememberSaveable { mutableStateOf("") }
+    var ssnError by rememberSaveable { mutableStateOf(SsnError.NONE) }
+    var showDialog by rememberSaveable { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -53,16 +62,29 @@ fun NeighborLogin(
         )
         Spacer(modifier = Modifier.weight(0.1f))
         OutlinedTextField(
-            value = neighborSSN,
-            onValueChange = { neighborSSN = it },
+            value = neighborSSN, // Rewritten to make this thing easier to look at
+            onValueChange = {
+                neighborSSN = it
+                if (ssnError != SsnError.NONE) {
+                    ssnError = SsnError.NONE
+                    showDialog = false
+                }
+            },
             label = { Text(stringResource(R.string.neighborCode)) },
             modifier = Modifier.fillMaxWidth(),
-            singleLine = true
+            singleLine = true,
+            isError = ssnError != SsnError.NONE
         )
         Spacer(modifier = Modifier.weight(1.8f))
         Button(
             onClick = {
-                onLogin(neighborSSN)
+                val result = validateSsn(neighborSSN)
+                if (result == SsnError.NONE) {
+                    onLogin(neighborSSN)
+                } else {
+                    ssnError = result
+                    showDialog = true
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -79,7 +101,27 @@ fun NeighborLogin(
             )
         }
     }
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text(stringResource(R.string.headerMessageWarning)) },
+            text = { Text(stringResource(ssnError.whatErrorDoesItHave())) },
+            confirmButton = {
+                TextButton(onClick = { showDialog = false }) {
+                    Text(stringResource(R.string.ok))
+                }
+            }
+        )
+    }
 }
+
+private fun SsnError.whatErrorDoesItHave(): Int = when (this) { // Honestly might rewrite neighborreserveform to ues a function instead,
+    SsnError.TOO_SHORT     -> R.string.ssnErrorTooShort //
+    SsnError.TOO_LONG      -> R.string.ssnErrorTooLong
+    SsnError.INVALID_FORMAT -> R.string.ssnErrorInvalidFormat
+    SsnError.NONE          -> R.string.ok
+}
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Preview(showBackground = true)
 @Composable
