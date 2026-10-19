@@ -9,17 +9,14 @@ enum class EventScheduleError { ENDS_BEFORE_STARTS, NONE}
 enum class EventDescriptionError { NONE_AT_ALL, TOO_LONG, INVALID_CHARACTERS, NONE}
 enum class AttendeesError { SMALLER_THAN_ZERO, MORE_THAN_MAXIMUM_POSSIBLE, INVALID_NUMBER, NONE }
 
-enum class SsnError { INVALID_FORMAT, TOO_LONG, TOO_SHORT, NONE}
-
 @RequiresApi(Build.VERSION_CODES.O)
 object EventValidator {
     const val TITLE_MIN_LENGTH = 5
     const val TITLE_MAX_LENGTH = 40
     const val DESCRIPTION_MAX_LENGTH = 150
-    private val SSN_REGEX = Regex("""^\d{7,8}-([1-9]|k|K)$""")
 
     // Limits strings to
-    val validRegex = Regex("""^[a-zA-Z0-9#-]+$""")
+    private val validRegex = Regex("""^[a-zA-Z0-9#-]+$""")
     fun validateTitle(title: String): EventTitleError = when {
         title.length < TITLE_MIN_LENGTH -> EventTitleError.TOO_SHORT
         title.length > TITLE_MAX_LENGTH -> EventTitleError.TOO_LONG
@@ -64,13 +61,5 @@ object EventValidator {
         }
     }
 
-    fun validateSsn(ssn: String): SsnError {
-        val s = ssn.trim()
-        return when {
-            s.length < 9 -> SsnError.TOO_SHORT
-            s.length > 10 -> SsnError.TOO_LONG
-            !SSN_REGEX.matches(s) -> SsnError.INVALID_FORMAT
-            else -> SsnError.NONE
-        }
-    }
+
 }
