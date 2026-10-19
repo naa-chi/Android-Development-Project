@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.juntavecinos.R
 import com.example.juntavecinos.ui.theme.JuntaVecinosTheme
-import com.example.juntavecinos.validation.EventValidator.validateSsn
+import com.example.juntavecinos.validation.LoginValidator.validateSsn
 import com.example.juntavecinos.validation.SsnError
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -41,7 +41,7 @@ fun NeighborLogin(
     onLogin : (ssn : String) -> Unit
 ) {
     var neighborSSN by rememberSaveable { mutableStateOf("") }
-    var ssnError by rememberSaveable { mutableStateOf(SsnError.NONE) }
+    var currentSsnError by rememberSaveable { mutableStateOf(SsnError.NONE) }
     var showDialog by rememberSaveable { mutableStateOf(false) }
 
     Column(
@@ -65,8 +65,8 @@ fun NeighborLogin(
             value = neighborSSN, // Rewritten to make this thing easier to look at
             onValueChange = {
                 neighborSSN = it
-                if (ssnError != SsnError.NONE) {
-                    ssnError = SsnError.NONE
+                if (currentSsnError != currentSsnError.NONE) {
+                    currentSsnError = currentSsnError.NONE
                     showDialog = false
                 }
             },
@@ -115,13 +115,9 @@ fun NeighborLogin(
     }
 }
 
-private fun SsnError.whatErrorDoesItHave(): Int = when (this) { // Honestly might rewrite neighborreserveform to ues a function instead,
-    SsnError.TOO_SHORT     -> R.string.ssnErrorTooShort //
-    SsnError.TOO_LONG      -> R.string.ssnErrorTooLong
-    SsnError.INVALID_FORMAT -> R.string.ssnErrorInvalidFormat
-    SsnError.NONE          -> R.string.ok
-}
 
+
+@RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Preview(showBackground = true)
 @Composable
