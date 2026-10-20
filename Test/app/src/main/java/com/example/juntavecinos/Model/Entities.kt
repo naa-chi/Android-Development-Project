@@ -4,7 +4,16 @@ enum class AccountType {
     ADMIN,
     TREASURER,
     SECRETARY,
-    NEIGHBOR
+    NEIGHBOR;
+    companion object {
+        fun fromString(value : String?): AccountType? {
+            return try {
+                value?.let {enumValueOf<AccountType>(it.uppercase())}
+            } catch (e : Exception) {
+                null
+            }
+        }
+    }
     // We can scale this btw IF we want a new account or user type
 }
 

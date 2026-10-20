@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,13 +35,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.juntavecinos.persistance.AppRepository
 import com.example.juntavecinos.ui.theme.JuntaVecinosTheme
+import kotlinx.coroutines.launch
 
 @Composable
 fun NeighborAccount(
+    repository: AppRepository?,
     onLogOff : () -> Unit
 ){
     var showLogOffDialog by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope ()
 
     Column(
         modifier = Modifier
@@ -172,6 +177,11 @@ fun NeighborAccount(
                 TextButton(
                     onClick = {
                         showLogOffDialog = false
+
+                        scope.launch {
+                            repository?.deleteSession()
+                        }
+
                         onLogOff()
                     }
                 ) {
@@ -199,6 +209,6 @@ fun NeighborAccount(
 @Composable
 fun PreviewNeighborAccount(){
     JuntaVecinosTheme() {
-        NeighborAccount {  }
+        NeighborAccount(null, {})
     }
 }

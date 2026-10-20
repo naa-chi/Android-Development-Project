@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    id 'com.google.devtools.ksp'
 }
 
 android {
@@ -38,6 +39,14 @@ android {
 dependencies {
     implementation platform(libs.androidx.compose.bom)
     implementation 'androidx.compose.material:material-icons-extended'
+    ksp "androidx.room:room-compiler:2.8.5"
+
+    implementation "androidx.room:room-runtime:2.8.5"
+    implementation "androidx.room:room-ktx:2.8.5"
+    implementation "net.zetetic:sqlcipher-android:4.19.1"
+    implementation "androidx.sqlite:sqlite-ktx:2.4.0"
+
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7"
 
     implementation libs.androidx.activity.compose
     implementation libs.androidx.compose.material3
@@ -57,5 +66,5 @@ dependencies {
 
     implementation libs.androidx.navigation.compose
 
-    implementation("androidx.webkit:webkit:1.8.0") // Through this getting cookies to work is teh easiest
+    implementation "androidx.webkit:webkit:1.17.1" // Through this getting cookies to work is teh easiest
 }

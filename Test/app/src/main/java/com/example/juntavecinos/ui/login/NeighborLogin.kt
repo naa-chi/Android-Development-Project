@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -30,43 +29,43 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.juntavecinos.Model.EventType
 import com.example.juntavecinos.Model.SSNLastDigits
 import com.example.juntavecinos.R
 import com.example.juntavecinos.ui.theme.JuntaVecinosTheme
 import com.example.juntavecinos.validation.LoginValidator.validateSsn
 import com.example.juntavecinos.validation.SsnError
-import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.core.text.isDigitsOnly
-import com.example.juntavecinos.validation.EventTitleError
-import com.example.juntavecinos.validation.EventValidator
+import com.example.juntavecinos.Model.AccountType
+import com.example.juntavecinos.persistance.AppRepository
+import com.example.juntavecinos.persistance.DAO.SessionDao
+import com.example.juntavecinos.persistance.dataModel.SessionData
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NeighborLogin(
-    onLogin : (ssn : String) -> Unit
+    repository: AppRepository?,
+    onLogin : () -> Unit?
 ) {
     var neighborSSN by rememberSaveable { mutableStateOf("") }
     var currentSsnError by rememberSaveable { mutableStateOf(SsnError.NONE) }
     var showDialog by remember { mutableStateOf(false) }
     var showSSNLastDigitDropdown by remember { mutableStateOf(false) }
     var ssnLastDigit by rememberSaveable { mutableStateOf(SSNLastDigits.ZERO) }
-
+    val scope = rememberCoroutineScope()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -104,7 +103,9 @@ fun NeighborLogin(
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 label = { Text(stringResource(R.string.neighborCode)) },
-                modifier = Modifier.weight(1f).height(100.dp),
+                modifier = Modifier
+                    .weight(1f)
+                    .height(100.dp),
                 singleLine = true,
                 isError = currentSsnError != SsnError.NONE,
                 supportingText = {
@@ -202,7 +203,18 @@ fun NeighborLogin(
             onClick = {
                 val result = validateSsn(neighborSSN, ssnLastDigit)
                 if (result == SsnError.NONE) {
-                    onLogin(neighborSSN)
+                    scope.launch {
+                        val session = SessionData(
+                            accountType = AccountType.NEIGHBOR.name,
+                            cookie = "COOKIEPLACEHOLDER",
+                            fullSSN = neighborSSN,
+                            ssnDV = ssnLastDigit.name
+                        )
+
+                        repository?.saveSession(session)
+                    }
+                    onLogin()
+
                 } else {
                     currentSsnError = result
                     showDialog = true
@@ -253,6 +265,6 @@ fun NeighborLogin(
 @Composable
 fun NeighborLoginPreview(){
     JuntaVecinosTheme() {
-        NeighborLogin({_ -> })
+        NeighborLogin(null, { })
     }
 }

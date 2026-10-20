@@ -6,8 +6,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -17,8 +20,9 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.juntavecinos.Model.AccountType
-import com.example.juntavecinos.Model.DayTimelineEvent
 import com.example.juntavecinos.R
+import com.example.juntavecinos.persistance.AppDatabase
+import com.example.juntavecinos.persistance.AppRepository
 import com.example.juntavecinos.ui.login.DirectiveLogin
 import com.example.juntavecinos.ui.login.LoginHoming
 import com.example.juntavecinos.ui.login.NeighborLogin
@@ -33,8 +37,8 @@ import com.example.juntavecinos.ui.neighbor.NeighborReserveForm
 import com.example.juntavecinos.ui.system.JuntaTopbar
 import com.example.juntavecinos.ui.theme.JuntaVecinosTheme
 import java.time.LocalDate
-import java.time.LocalTime
-
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.launch
 enum class Navigation(val title: Int) {
     LoadingHandler(title = R.string.loadHandle),
     LoginStarter(title = R.string.appTitle),
@@ -57,6 +61,14 @@ fun Main(
     val rawRoute = backStackEntry?.destination?.route ?: Navigation.LoadingHandler.name
     val baseRoute = rawRoute.substringBefore("/")
     val currentScreen = Navigation.valueOf(baseRoute)
+    val context = LocalContext.current
+
+    val repository : AppRepository= remember {
+        //placeholder until we make an actual encryption system
+        val password = "storageEncryptedPassword123!!"
+        val database = AppDatabase.getDatabase(context, password)
+        AppRepository(database.sessionDao())
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -133,6 +145,7 @@ fun Main(
             composable(route = Navigation.LoadingHandler.name) {
                 LoadingHandler(
                     onLoggedIn = { accountType ->
+                        //TODO: replace for a "when" when we actually have more values..
                         if (accountType == AccountType.NEIGHBOR) {
                             navController.navigate(Navigation.NeighborMoney.name) {
                                 popUpTo(baseRoute) { inclusive = true }
@@ -145,7 +158,8 @@ fun Main(
                             popUpTo(baseRoute) { inclusive = true }
                             launchSingleTop = true
                         }
-                    }
+                    },
+                    repository
                 )
             }
 
@@ -167,7 +181,9 @@ fun Main(
 
             //Show neighbor login
             composable(route = Navigation.NeighborLogin.name) {
-                NeighborLogin({
+                NeighborLogin(
+                    repository,
+                    {
                     navController.navigate(Navigation.NeighborMoney.name) {
                         popUpTo(navController.graph.id) { inclusive = true }
                         launchSingleTop = true
@@ -251,12 +267,15 @@ fun Main(
 
             //Show profile and account
             composable(route = Navigation.NeighborProfile.name) {
-                NeighborAccount {
-                    navController.navigate(Navigation.LoginStarter.name) {
-                        popUpTo(navController.graph.id) { inclusive = true }
-                        launchSingleTop = true
+                NeighborAccount(
+                    repository,
+                    {
+                        navController.navigate(Navigation.LoginStarter.name) {
+                            popUpTo(navController.graph.id) { inclusive = true }
+                            launchSingleTop = true
+                        }
                     }
-                }
+                )
             }
 
             //Reserve day
