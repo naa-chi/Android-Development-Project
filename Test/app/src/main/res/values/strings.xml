@@ -82,10 +82,23 @@
     <string name="attendeesMoreThanZeroWarning">El número de asistentes estimados debe ser mayor o igual a 0.</string>
     <string name="invalidAttendeeCount">El número de asistentes debe ser un valor numerico.</string>
     <string name="moreThanMaximumAttendee">El número de asistentes es mayor al máximo posible.</string>
-    <string name="ssnErrorTooShort">Rut muy corto!!</string>
-    <string name="ssnErrorTooLong">Rut muy largo!!</string>
+    <string name="ssnErrorTooShort">Rut ingresado es demasiado corto</string>
+    <string name="ssnErrorTooLong">Rut ingresado es demasiado largo</string>
     <string name="ssnErrorInvalidFormat">Formato equivocado</string>
-
+    <string name="ssnErrorUnkown">Error desconocido</string>
     <string name="eventOrganizer">Organiza:</string>
     <string name="eventDescription">Descripción:</string>
+
+    <string name="ssnLastDigit">DV</string>
+    <string name="invalidSSN">RUT Inválido</string>
+    <string name="PARTY">Fiesta.</string>
+    <string name="MEETING">Reunión.</string>
+    <string name="BIRTHDAY">Cumpleaños.</string>
+    <string name="WEDDING">Boda.</string>
+    <string name="ANNIVERSARY">Aniversario.</string>
+    <string name="BABY_SHOWER">Baby Shower.</string>
+    <string name="FAIRE">Feria.</string>
+    <string name="RELIGIOUS_EVENT">Evento Religioso.</string>
+    <string name="OTHER">Otro...</string>
+
 </resources>

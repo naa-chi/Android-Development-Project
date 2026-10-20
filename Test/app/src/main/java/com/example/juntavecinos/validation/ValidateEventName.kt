@@ -15,8 +15,8 @@ object EventValidator {
     const val TITLE_MAX_LENGTH = 40
     const val DESCRIPTION_MAX_LENGTH = 150
 
-    // Limits strings to
-    private val validRegex = Regex("""^[a-zA-Z0-9#-]+$""")
+    // Limits strings to a-Z chars, 0-9 digits, hyphen and hashtag
+    private val validRegex = Regex("""^[a-zA-Z0-9#\s-]+$""")
     fun validateTitle(title: String): EventTitleError = when {
         title.length < TITLE_MIN_LENGTH -> EventTitleError.TOO_SHORT
         title.length > TITLE_MAX_LENGTH -> EventTitleError.TOO_LONG

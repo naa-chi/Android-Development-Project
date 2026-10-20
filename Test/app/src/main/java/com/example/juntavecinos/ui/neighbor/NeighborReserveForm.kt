@@ -315,7 +315,21 @@ fun NeighborReserveForm(
                 onExpandedChange = { expandedDropdown = !expandedDropdown }
             ) {
                 OutlinedTextField(
-                    value = selectedEventType.name,
+                    value = stringResource(
+                        when (selectedEventType) {
+                            EventType.PARTY -> R.string.PARTY
+                            EventType.MEETING -> R.string.MEETING
+                            EventType.BIRTHDAY -> R.string.BIRTHDAY
+                            EventType.WEDDING -> R.string.WEDDING
+                            EventType.ANNIVERSARY -> R.string.ANNIVERSARY
+                            EventType.BABY_SHOWER -> R.string.BABY_SHOWER
+                            EventType.FAIRE -> R.string.FAIRE
+                            EventType.RELIGIOUS_EVENT -> R.string.RELIGIOUS_EVENT
+                            EventType.OTHER -> R.string.OTHER
+                        }
+                    )
+
+                    ,
                     onValueChange = {},
                     readOnly = true,
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedDropdown) },
@@ -330,7 +344,21 @@ fun NeighborReserveForm(
                 ) {
                     EventType.entries.forEach { type ->
                         DropdownMenuItem(
-                            text = { Text(type.name) },
+                            text = { Text(
+                                stringResource(
+                                    when (type) {
+                                        EventType.PARTY -> R.string.PARTY
+                                        EventType.MEETING -> R.string.MEETING
+                                        EventType.BIRTHDAY -> R.string.BIRTHDAY
+                                        EventType.WEDDING -> R.string.WEDDING
+                                        EventType.ANNIVERSARY -> R.string.ANNIVERSARY
+                                        EventType.BABY_SHOWER -> R.string.BABY_SHOWER
+                                        EventType.FAIRE -> R.string.FAIRE
+                                        EventType.RELIGIOUS_EVENT -> R.string.RELIGIOUS_EVENT
+                                        EventType.OTHER -> R.string.OTHER
+                                    }
+                                )
+                            ) },
                             onClick = {
                                 selectedEventType = type
                                 expandedDropdown = false
