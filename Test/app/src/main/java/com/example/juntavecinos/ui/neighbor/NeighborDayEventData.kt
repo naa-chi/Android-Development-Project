@@ -31,8 +31,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.juntavecinos.Model.DayEventType
 import com.example.juntavecinos.Model.DayTimelineEvent
 import com.example.juntavecinos.R
+import com.example.juntavecinos.persistance.dataModel.DayEventData
 import com.example.juntavecinos.ui.theme.ColorFull
 import com.example.juntavecinos.ui.theme.JuntaVecinosTheme
 import java.time.LocalTime
@@ -43,7 +45,7 @@ fun NeighborDayEventData(
     topOffset : Dp,
     cardHeight : Dp,
     shape : Shape,
-    event : DayTimelineEvent,
+    event : DayEventData,
     timeSpanText : String
 ) {
     Box(
@@ -85,6 +87,16 @@ fun NeighborDayEventData(
                 )
 
                 BasicText(
+                    text = "Tipo de evento: [PLACEHOLDER, AGREGAR A BD!]",
+                    style = TextStyle(
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
+                        fontWeight = FontWeight.Bold
+                    ),
+                    overflow = TextOverflow.Clip
+                )
+
+                BasicText(
                     text = "${stringResource(R.string.eventDescription)}: ${event.description}",
                     style = TextStyle(
                         fontSize = 12.sp,
@@ -92,6 +104,8 @@ fun NeighborDayEventData(
                     ),
                     overflow = TextOverflow.Clip
                 )
+
+
             }
             BasicText(
                 text = timeSpanText,
@@ -119,12 +133,13 @@ fun PreviewNeighborEventData() {
             0.dp,
             200.dp,
             RoundedCornerShape(8.dp),
-            DayTimelineEvent(
+            DayEventData(
+                1,
                 "Titulo",
                 "Host",
-                "DescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripciónDescripción",
-                LocalTime.now(),
-                LocalTime.now()
+                "",
+                0,
+                0
             ),
             "10:10 am - 10:10 pm"
         )

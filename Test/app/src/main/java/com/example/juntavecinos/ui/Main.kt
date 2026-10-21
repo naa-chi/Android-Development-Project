@@ -67,7 +67,7 @@ fun Main(
         //placeholder until we make an actual encryption system
         val password = "storageEncryptedPassword123!!"
         val database = AppDatabase.getDatabase(context, password)
-        AppRepository(database.sessionDao())
+        AppRepository(database.sessionDao(), database.eventDao())
     }
 
     Scaffold(
@@ -213,6 +213,7 @@ fun Main(
             //Show calendar
             composable(route = Navigation.NeighborCalendar.name) {
                 NeighborCalendar(
+                    repository,
                     onDateSelected = { date ->
                         navController.navigate("${Navigation.NeighborCalendarDay.name}/$date") {
                             launchSingleTop = true
@@ -235,28 +236,7 @@ fun Main(
 
                 NeighborDayOverview(
                     selectedDate = selectedDate,
-                    events = listOf(
-                        /*
-                        DayTimelineEvent(
-                            title = "Reunión de Seguridad",
-                            hoster = "directiva@vecinos.cl",
-                            startTime = LocalTime.of(9, 0),
-                            endTime = LocalTime.of(11, 0)
-                        ),
-                        DayTimelineEvent(
-                            title = "Cumpleaños Comunitario",
-                            hoster = "vecino12@gmail.com",
-                            startTime = LocalTime.of(14, 0),
-                            endTime = LocalTime.of(17, 30)
-                        ),
-                        DayTimelineEvent(
-                            title = "Taller de Reciclaje",
-                            hoster = "tesoreria@vecinos.cl",
-                            startTime = LocalTime.of(19, 0),
-                            endTime = LocalTime.of(21, 0)
-                        )
-                     */
-                    ),
+                    repository,
                     {
                         navController.navigate("${Navigation.NeighborReserveForm.name}/$selectedDate") {
                             launchSingleTop = true
@@ -288,8 +268,7 @@ fun Main(
                 val dateArg = backStackEntry.arguments?.getString("selectedDate")
                 val selectedDate = dateArg?.let { LocalDate.parse(it) } ?: LocalDate.now()
 
-                NeighborReserveForm(selectedDate, {
-                    _, _, _, _, _, _, _ ->
+                NeighborReserveForm(selectedDate,repository, {
                     navController.navigate(Navigation.NeighborMoney.name) {
                         popUpTo(navController.graph.id) { inclusive = true }
                         launchSingleTop = true

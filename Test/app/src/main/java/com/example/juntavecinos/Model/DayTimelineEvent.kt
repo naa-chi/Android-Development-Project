@@ -7,5 +7,5 @@ data class DayTimelineEvent(
     val hoster: String,
     val description : String,
     val startTime: LocalTime,
-    val endTime: LocalTime
+    val endTime: LocalTime,
 )

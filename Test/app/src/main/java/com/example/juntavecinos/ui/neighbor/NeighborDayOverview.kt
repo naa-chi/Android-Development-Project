@@ -45,24 +45,67 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 import androidx.compose.material3.Button
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.RectangleShape
+import com.example.juntavecinos.persistance.AppRepository
+import com.example.juntavecinos.persistance.dataModel.DayEventData
+import kotlinx.coroutines.launch
+import java.time.ZoneId
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NeighborDayOverview(
     selectedDate: LocalDate = LocalDate.now(),
-    events: List<DayTimelineEvent> = emptyList(),
+    repository: AppRepository?,
     onReserveHour : () -> Unit
 ) {
     val hourRowHeight = 64.dp
     val startHour = 8
     val endHour = 23
     val totalHours = endHour - startHour
-
+    var uiEvents by remember { mutableStateOf<List<DayEventData>>(emptyList()) }
+    val scope = rememberCoroutineScope()
     val formattedDate = remember(selectedDate) {
         val formatter = DateTimeFormatter.ofPattern("EEEE, d 'de' MMMM", Locale.getDefault())
         selectedDate.format(formatter).replaceFirstChar { it.uppercase() }
     }
+
+
+
+    LaunchedEffect(selectedDate) {
+        scope.launch {
+            // Calculate start and end of the day in milliseconds
+            if (repository == null) return@launch
+
+            val startOfDay = selectedDate.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+            val endOfDay = selectedDate.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli() - 1
+
+            val dbEvents = repository.getEventsInDay(startOfDay, endOfDay)
+
+            uiEvents = dbEvents.map { event ->
+                val startTime = java.time.Instant.ofEpochMilli(event.startTime)
+                    .atZone(ZoneId.systemDefault())
+                    .toInstant().toEpochMilli()
+
+                val endTime = java.time.Instant.ofEpochMilli(event.endTime)
+                    .atZone(ZoneId.systemDefault())
+                    .toInstant().toEpochMilli() - 1
+
+                DayEventData(
+                    title = event.title,
+                    hoster = event.hoster,
+                    description = event.description,
+                    startTime = startTime,
+                    endTime = endTime
+                )
+            }
+        }
+    }
+
 
     Column(
         modifier = Modifier
@@ -138,25 +181,32 @@ fun NeighborDayOverview(
                     }
                 }
 
-                events.forEach { event ->
-                    //my god gemini carried HARD here I couldn't figure
-                    //this out for the life of me
-                    val startOffsetMinutes = ((event.startTime.hour - startHour) * 60) + event.startTime.minute
-                    val durationMinutes = ((event.endTime.hour - event.startTime.hour) * 60) +
-                            (event.endTime.minute - event.startTime.minute)
+                uiEvents.forEach { event ->
+                    // Convert Long back to LocalTime ONLY for calculation/display
+                    val startLocalTime = java.time.Instant.ofEpochMilli(event.startTime)
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalTime()
+
+                    val endLocalTime = java.time.Instant.ofEpochMilli(event.endTime)
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalTime()
+
+                    val startOffsetMinutes = ((startLocalTime.hour - startHour) * 60) + startLocalTime.minute
+                    val durationMinutes = ((endLocalTime.hour - startLocalTime.hour) * 60) +
+                            (endLocalTime.minute - startLocalTime.minute)
 
                     val topOffset = (hourRowHeight * startOffsetMinutes.toFloat() / 60f)
                     val cardHeight = (hourRowHeight * durationMinutes.toFloat() / 60f)
 
                     val shape = RoundedCornerShape(8.dp)
-                    val timeSpanText = "${event.startTime.format(DateTimeFormatter.ofPattern("HH:mm"))} - ${event.endTime.format(DateTimeFormatter.ofPattern("HH:mm"))}"
+                    val timeSpanText = "${startLocalTime.format(DateTimeFormatter.ofPattern("HH:mm"))} - ${endLocalTime.format(DateTimeFormatter.ofPattern("HH:mm"))}"
 
                     NeighborDayEventData(
-                        topOffset,
-                        cardHeight,
-                        shape,
-                        event,
-                        timeSpanText
+                        topOffset = topOffset,
+                        cardHeight = cardHeight,
+                        shape = shape,
+                        event = event, // Pass the UI model with Longs
+                        timeSpanText = timeSpanText
                     )
                 }
             }
@@ -188,7 +238,7 @@ fun PreviewDayOverview() {
     JuntaVecinosTheme {
         NeighborDayOverview(
             selectedDate = LocalDate.now(),
-            events = listOf(),
+            null,
             {}
         )
     }

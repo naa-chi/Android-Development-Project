@@ -1,6 +1,5 @@
 package com.example.juntavecinos.persistance.dataModel
 
-
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 

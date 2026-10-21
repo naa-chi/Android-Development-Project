@@ -101,4 +101,6 @@
     <string name="RELIGIOUS_EVENT">Evento Religioso.</string>
     <string name="OTHER">Otro...</string>
 
+    <string name="timeSlotOccupied">El horario seleccionado se encuentra ocupado por otro evento.</string>
+    <string name="timeSlotOutOfBounds">No puede seleccionar un horario fuera de horas hábiles</string>
 </resources>

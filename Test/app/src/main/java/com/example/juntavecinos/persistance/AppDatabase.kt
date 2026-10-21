@@ -4,12 +4,16 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.juntavecinos.persistance.DAO.EventDao
 import com.example.juntavecinos.persistance.DAO.SessionDao
+import com.example.juntavecinos.persistance.dataModel.DayEventData
 import com.example.juntavecinos.persistance.dataModel.SessionData
-import net.zetetic.database.sqlcipher.SupportOpenHelperFactory // <--- The Modern Standard
-@Database(entities = [SessionData::class], version = 1)
+import net.zetetic.database.sqlcipher.SupportOpenHelperFactory
+
+@Database(entities = [SessionData::class, DayEventData::class], version = 2)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun sessionDao(): SessionDao
+    abstract fun eventDao(): EventDao
 
     companion object {
         init {
@@ -32,6 +36,7 @@ abstract class AppDatabase : RoomDatabase() {
                     "session_database"
                 )
                     .openHelperFactory(SupportOpenHelperFactory(password.toByteArray()))
+                    .fallbackToDestructiveMigration(dropAllTables = true)
                     .build()
 
                 INSTANCE = instance

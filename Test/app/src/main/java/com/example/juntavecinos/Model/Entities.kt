@@ -12,6 +12,7 @@ enum class AccountType {
             } catch (e : Exception) {
                 null
             }
+
         }
     }
     // We can scale this btw IF we want a new account or user type
@@ -52,3 +53,13 @@ data class Event(
     val location: String,
     val price: Double
 )
+
+enum class DayEventType {
+    Free,
+    ReservedAvailable,
+    ReservedFull;
+
+    companion object {
+        fun random(): DayEventType = entries.random()
+    }
+}

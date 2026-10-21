@@ -9,11 +9,16 @@ enum class EventScheduleError { ENDS_BEFORE_STARTS, NONE}
 enum class EventDescriptionError { NONE_AT_ALL, TOO_LONG, INVALID_CHARACTERS, NONE}
 enum class AttendeesError { SMALLER_THAN_ZERO, MORE_THAN_MAXIMUM_POSSIBLE, INVALID_NUMBER, NONE }
 
+enum class HourError {
+    OOB, NONE
+}
 @RequiresApi(Build.VERSION_CODES.O)
 object EventValidator {
     const val TITLE_MIN_LENGTH = 5
     const val TITLE_MAX_LENGTH = 40
     const val DESCRIPTION_MAX_LENGTH = 150
+    val minHour = 8
+    val maxHour = 22
 
     // Limits strings to a-Z chars, 0-9 digits, hyphen and hashtag
     private val validRegex = Regex("""^[a-zA-Z0-9#\s-]+$""")
@@ -58,6 +63,16 @@ object EventValidator {
             }
         } catch (e : Exception) {
             AttendeesError.INVALID_NUMBER
+        }
+    }
+
+    fun validateEventHour(startTime : LocalTime, endTime : LocalTime) : HourError {
+        return if (startTime.hour < minHour || startTime.hour >= maxHour ||
+            endTime.hour < minHour || endTime.hour > maxHour ||
+            (endTime.hour == maxHour && endTime.minute > 0)) {
+            HourError.OOB
+        } else {
+            HourError.NONE
         }
     }
 

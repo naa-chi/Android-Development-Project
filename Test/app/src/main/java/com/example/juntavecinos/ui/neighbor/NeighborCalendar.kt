@@ -28,10 +28,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,20 +50,41 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.juntavecinos.Model.DayEventType
 import com.example.juntavecinos.R
+import com.example.juntavecinos.persistance.AppRepository
 import com.example.juntavecinos.ui.theme.JuntaVecinosTheme
+import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
+import java.time.ZoneId
 import java.time.format.TextStyle as JavaTextStyle
 import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NeighborCalendar(
+    repository: AppRepository?,
     onDateSelected: (LocalDate) -> Unit = {}
 ) {
     //remember to avoid the UI update wiping away the data
     var currentYearMonth by remember { mutableStateOf(YearMonth.now()) }
+    val scope = rememberCoroutineScope ()
+    val dayTypeCache = remember { mutableStateMapOf<LocalDate, DayEventType>() }
+
+    LaunchedEffect(currentYearMonth) {
+        val daysInMonth = currentYearMonth.lengthOfMonth()
+        for (day in 1..daysInMonth) {
+            val date = currentYearMonth.atDay(day)
+            val startOfDay = date.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+            val endOfDay = date.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli() - 1
+            val events = repository?.getEventsInDay(startOfDay, endOfDay)
+            if (events != null) {
+                val type = repository.getDayType(events)
+                dayTypeCache[date] = type
+            }
+
+        }
+    }
 
     val calendarDays by remember(currentYearMonth) {
         derivedStateOf {
@@ -70,16 +94,13 @@ fun NeighborCalendar(
 
             val list = mutableListOf<LocalDate?>()
 
-
             //for days of the previus month
             repeat(dayOfWeekOffset) {
                 list.add(null)
             }
-
             for (day in 1..daysInMonth) {
                 list.add(currentYearMonth.atDay(day))
             }
-
             list
         }
     }
@@ -159,7 +180,7 @@ fun NeighborCalendar(
                 if (date == null) {
                     Box(modifier = Modifier.aspectRatio(1f))
                 } else {
-                    val dayType : DayEventType = DayEventType.random()
+                    val dayType = dayTypeCache[date] ?: DayEventType.Free
 
                     val buttonColor = when(dayType) {
                         DayEventType.Free -> Color.Transparent
@@ -315,6 +336,7 @@ fun NeighborCalendar(
 fun PreviewNeighborCalendar() {
     JuntaVecinosTheme {
         NeighborCalendar(
+            null,
             {}
         )
     }

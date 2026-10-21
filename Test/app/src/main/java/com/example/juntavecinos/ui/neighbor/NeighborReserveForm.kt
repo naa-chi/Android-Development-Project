@@ -47,6 +47,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.stringResource
@@ -73,11 +74,15 @@ import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.text.style.TextDirection
+import com.example.juntavecinos.persistance.AppRepository
+import com.example.juntavecinos.persistance.dataModel.DayEventData
 import com.example.juntavecinos.validation.EventDescriptionError
 import com.example.juntavecinos.validation.EventScheduleError
 import com.example.juntavecinos.validation.EventTitleError
 import com.example.juntavecinos.validation.AttendeesError
 import com.example.juntavecinos.validation.EventValidator
+import com.example.juntavecinos.validation.HourError
+import kotlinx.coroutines.launch
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -85,36 +90,30 @@ import com.example.juntavecinos.validation.EventValidator
 @Composable
 fun NeighborReserveForm(
     dateSelected: LocalDate,
-    onReserveSubmit: (
-        title: String,
-        description: String,
-        eventType: EventType,
-        date: LocalDate,
-        startTime: LocalTime,
-        endTime: LocalTime,
-        attendeeCount: Int,
-    ) -> Unit = { _, _, _, _, _, _, _-> }
+    repository: AppRepository,
+    onNavigateBack: () -> Unit = {}
 ) {
-    var title by remember { mutableStateOf("") } // between 6 and 40
+    var title by remember { mutableStateOf("") }
     var titleError by remember { mutableStateOf(EventTitleError.NONE) }
     var descriptionError by remember {mutableStateOf(EventDescriptionError.NONE)}
     var scheduleError by remember { mutableStateOf(EventScheduleError.NONE) }
 
-    var description by remember { mutableStateOf("") } // up to 150
+    var description by remember { mutableStateOf("") }
     var selectedEventType by remember { mutableStateOf(EventType.OTHER) }
     var expandedDropdown by remember { mutableStateOf(false) }
 
     var attendeesStr by remember { mutableStateOf("0") }
     var attendeeCountState by remember { mutableStateOf(AttendeesError.NONE)}
-
+    var eventHourState by remember { mutableStateOf(HourError.NONE) }
     var currentDate by remember { mutableStateOf(dateSelected) }
     var startTime by remember { mutableStateOf(LocalTime.of(9, 0)) }
     var endTime by remember { mutableStateOf(LocalTime.of(11, 0)) }
+    val minHour = 8
+    val maxHour = 22
 
     var showDatePicker by remember { mutableStateOf(false) }
     var showStartTimePicker by remember { mutableStateOf(false) }
     var showEndTimePicker by remember { mutableStateOf(false) }
-
 
     var errorMessage by remember { mutableStateOf<Int?>(null) }
 
@@ -130,6 +129,8 @@ fun NeighborReserveForm(
         disabledLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
         disabledPlaceholderColor = MaterialTheme.colorScheme.onSurfaceVariant
     )
+
+    val scope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -180,39 +181,62 @@ fun NeighborReserveForm(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .clickable { showStartTimePicker = true }
-                ) {
-                    OutlinedTextField(
-                        value = startTime.format(DateTimeFormatter.ofPattern("HH:mm")),
-                        onValueChange = {},
-                        label = { Text(stringResource(R.string.start)) },
-                        readOnly = true,
-                        enabled = false,
-                        trailingIcon = { Icon(Icons.Default.AccessTime, contentDescription = null) },
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RectangleShape,
-                        colors = pickerTextFieldColors,
-                    )
+                Column(modifier = Modifier.weight(1f)) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { showStartTimePicker = true }
+                    ) {
+                        OutlinedTextField(
+                            value = startTime.format(DateTimeFormatter.ofPattern("HH:mm")),
+                            onValueChange = {},
+                            label = { Text(stringResource(R.string.start)) },
+                            readOnly = true,
+                            enabled = false,
+                            trailingIcon = { Icon(Icons.Default.AccessTime, contentDescription = null) },
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RectangleShape,
+                            colors = pickerTextFieldColors,
+                        )
+                    }
+                    // Red hint for Start Time
+                    if (startTime.hour !in minHour..<maxHour) {
+                        Text(
+                            text = "Debe ser entre ${minHour}:00 y ${maxHour}:00",
+                            color = MaterialTheme.colorScheme.error,
+                            fontSize = 12.sp,
+                            modifier = Modifier.padding(start = 4.dp, top = 4.dp)
+                        )
+                    }
                 }
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .clickable { showEndTimePicker = true }
-                ) {
-                    OutlinedTextField(
-                        value = endTime.format(DateTimeFormatter.ofPattern("HH:mm")),
-                        onValueChange = {},
-                        label = { Text(stringResource(R.string.end)) },
-                        readOnly = true,
-                        enabled = false,
-                        trailingIcon = { Icon(Icons.Default.AccessTime, contentDescription = null) },
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RectangleShape,
-                        colors = pickerTextFieldColors,
-                    )
+
+                Column(modifier = Modifier.weight(1f)) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { showEndTimePicker = true }
+                    ) {
+                        OutlinedTextField(
+                            value = endTime.format(DateTimeFormatter.ofPattern("HH:mm")),
+                            onValueChange = {},
+                            label = { Text(stringResource(R.string.end)) },
+                            readOnly = true,
+                            enabled = false,
+                            trailingIcon = { Icon(Icons.Default.AccessTime, contentDescription = null) },
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RectangleShape,
+                            colors = pickerTextFieldColors,
+                        )
+                    }
+                    // Red hint for End Time
+                    if (endTime.hour !in minHour..maxHour || (endTime.hour == maxHour && endTime.minute > 0)) {
+                        Text(
+                            text = "Debe ser entre ${minHour}:00 y ${maxHour}:00",
+                            color = MaterialTheme.colorScheme.error,
+                            fontSize = 12.sp,
+                            modifier = Modifier.padding(start = 4.dp, top = 4.dp)
+                        )
+                    }
                 }
             }
 
@@ -380,23 +404,50 @@ fun NeighborReserveForm(
                 descriptionError = EventValidator.validateDescription(description)
                 scheduleError = EventValidator.validateSchedule(startTime, endTime)
                 attendeeCountState = EventValidator.validateAttendeeCount(attendeesStr)
+                eventHourState = EventValidator.validateEventHour(startTime, endTime)
 
-                println(attendeesStr.toIntOrNull())
+
                 when {
                     titleError != EventTitleError.NONE -> errorMessage = R.string.checkTitle
                     descriptionError != EventDescriptionError.NONE -> errorMessage = R.string.checkDescription
                     scheduleError != EventScheduleError.NONE -> errorMessage = R.string.invalidDate
                     currentDate < LocalDate.now() -> errorMessage = R.string.dateOutOfBounds
                     attendeeCountState != AttendeesError.NONE -> errorMessage = R.string.checkAttendeeCount
-                    else -> onReserveSubmit(
-                        title,
-                        description,
-                        selectedEventType,
-                        currentDate,
-                        EventValidator.effectiveStart(startTime),
-                        endTime,
-                        attendeesStr.toInt(),
-                    )
+                    eventHourState != HourError.NONE -> errorMessage = R.string.timeSlotOutOfBounds
+
+                    else -> {
+                        scope.launch {
+                            val startMillis = currentDate.atTime(startTime).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+                            val endMillis = currentDate.atTime(endTime).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+
+                            // check for conflicts
+                            // We fetch all events in the day to check for overlaps manually
+                            val dayStart = currentDate.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+                            val dayEnd = currentDate.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli() - 1
+
+                            val existingEvents = repository.getEventsInDay(dayStart, dayEnd)
+
+                            // Overlap condition: ExistingStart < NewEnd AND ExistingEnd > NewStart
+                            val hasConflict = existingEvents.any { event ->
+                                event.startTime < endMillis && event.endTime > startMillis
+                            }
+
+                            if (hasConflict) {
+                                errorMessage = R.string.timeSlotOccupied
+                            } else {
+                                val event = DayEventData(
+                                    title = title,
+                                    hoster = "USUARIO LOCAL",
+                                    description = description,
+                                    startTime = startMillis,
+                                    endTime = endMillis,
+                                )
+
+                                repository.insertEvent(event)
+                                onNavigateBack()
+                            }
+                        }
+                    }
                 }
             },
             shape = RectangleShape
@@ -550,13 +601,6 @@ fun NeighborReserveForm(
             }
         }
     }
-}
 
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview(showBackground = true)
-@Composable
-fun PreviewNeighborForm() {
-    JuntaVecinosTheme {
-        NeighborReserveForm(dateSelected = LocalDate.now())
-    }
+
 }
