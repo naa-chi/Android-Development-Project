@@ -13,19 +13,19 @@
 > Base de datos (Room + SQLite) - Persistencia de datos local y remota
 
 ## Estructura
-``
-├── Test/          # Aplicación Android (cliente móvil)
+```
+├── Test/          # Aplicación Android (cliente móvil)  
 │   ├── app/       # Código fuente principal
 │   └── gradle/    # Configuración de build
 ├── Server/        # Backend en Python
-│   ├── event/     # Gestión de eventos
+│   ├── event/     # Gestión de eventos 
 │   ├── expenses/  # Control de gastos
 │   ├── neighborhood/ # Datos del vecindario
-│   ├── users/     # Gestión de usuarios
+│   ├── users/     # Gestión de usuario
 │   ├── venue/     # Espacios comunes
 │   └── zGateway/  # API Gateway
 └── External/      # Recursos externos
-``
+```
 
 ## Caracteristicas Principales
 - Gestión de Eventos: Creación, edición y seguimiento de eventos comunitarios
