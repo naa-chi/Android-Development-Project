@@ -54,4 +54,4 @@ Requisitos Previos
 
 
 # JUNTA DE VECINOS 2026 TODOS LOS DERECHOS RESERVADOS
-sup><sub>(No realmente)</sub></sup>
+<sup><sub>(No realmente)</sub></sup>
