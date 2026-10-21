@@ -42,7 +42,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.juntavecinos.Model.SSNLastDigits
-import com.example.juntavecinos.R
 import com.example.juntavecinos.ui.theme.JuntaVecinosTheme
 import com.example.juntavecinos.validation.LoginValidator.validateSsn
 import com.example.juntavecinos.validation.SsnError
@@ -52,6 +51,7 @@ import com.example.juntavecinos.persistance.AppRepository
 import com.example.juntavecinos.persistance.DAO.SessionDao
 import com.example.juntavecinos.persistance.dataModel.SessionData
 import kotlinx.coroutines.launch
+import com.example.juntavecinos.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
@@ -64,7 +64,7 @@ fun NeighborLogin(
     var currentSsnError by rememberSaveable { mutableStateOf(SsnError.NONE) }
     var showDialog by remember { mutableStateOf(false) }
     var showSSNLastDigitDropdown by remember { mutableStateOf(false) }
-    var ssnLastDigit by rememberSaveable { mutableStateOf(SSNLastDigits.ZERO) }
+    var ssnLastDigit by rememberSaveable { mutableStateOf(SSNLastDigits.ONE) }
     val scope = rememberCoroutineScope()
     Column(
         modifier = Modifier
@@ -136,7 +136,6 @@ fun NeighborLogin(
                 OutlinedTextField(
                     value =
                         when (ssnLastDigit) {
-                            SSNLastDigits.ZERO -> "0"
                             SSNLastDigits.ONE -> "1"
                             SSNLastDigits.TWO -> "2"
                             SSNLastDigits.THREE -> "3"
@@ -171,7 +170,6 @@ fun NeighborLogin(
                         DropdownMenuItem(
                             text = { Text(
                                 when (type) {
-                                    SSNLastDigits.ZERO -> "0"
                                     SSNLastDigits.ONE -> "1"
                                     SSNLastDigits.TWO -> "2"
                                     SSNLastDigits.THREE -> "3"
