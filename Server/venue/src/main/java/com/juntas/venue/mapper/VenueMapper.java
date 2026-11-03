@@ -25,6 +25,7 @@ public class VenueMapper {
         v.setType(req.type());
         v.setPricePerHour(req.pricePerHour());
         v.setCapacity(req.capacity());
+        v.setVenueSizeMSquared(req.venueSizeMSquared());
         v.setNeighborhoodId(req.neighbourhoodId());
         return v;
     }
@@ -35,5 +36,6 @@ public class VenueMapper {
         if (req.pricePerHour() != null) target.setPricePerHour(req.pricePerHour());
         if (req.capacity() != null) target.setCapacity(req.capacity());
         if (req.neighbourhoodId() != null) target.setNeighborhoodId(req.neighbourhoodId());
+        if (req.venueSizeMSquared() != null) target.setVenueSizeMSquared(req.venueSizeMSquared());
     }
 }

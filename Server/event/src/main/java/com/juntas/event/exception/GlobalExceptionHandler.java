@@ -15,13 +15,6 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-        @ExceptionHandler(VenueNotFoundException.class)
-        public ResponseEntity<ApiError> handleNotFound(VenueNotFoundException ex, HttpServletRequest req) {
-                return ResponseEntity
-                        .status(HttpStatus.NOT_FOUND)
-                        .body(ApiError.of(404, "Not Found", ex.getMessage(), req.getRequestURI()));
-        }
-
 
         @ExceptionHandler(MethodArgumentNotValidException.class)
         public ResponseEntity<ApiError> handleValidation(MethodArgumentNotValidException ex,

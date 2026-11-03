@@ -15,6 +15,9 @@ public record UpdateVenueRequest(
         @PositiveOrZero(message = "El precio por hora no puede ser negativo")
         BigDecimal pricePerHour,
 
+        @Min(value = 1, message = "El tamaño debe ser al menos 1 m²")
+        Long venueSizeMSquared,
+
         @Positive(message = "La capacidad debe ser mayor que cero")
         Integer capacity,
 

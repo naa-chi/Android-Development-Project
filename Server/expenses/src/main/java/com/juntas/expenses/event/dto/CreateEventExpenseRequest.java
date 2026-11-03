@@ -23,6 +23,10 @@ public record CreateEventExpenseRequest(
         @Size(max = 120)
         String forEmail,
 
+        @NotNull(message = "El evento es obligatorio")
+        Long eventId,
+
+
         @NotNull(message = "(HELLO I'M YOUR) Neighbor/hood (GOODBYE! SEE YOU LATER!)es obligatorio")
         Long neighborhoodId
 ) {}

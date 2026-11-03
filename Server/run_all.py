@@ -26,8 +26,8 @@ ENV_FILE = SCRIPT_DIR / ".env"
 
 # (display name, directory name, port, grace seconds after port opens)
 SERVICES = [
-    ("Discovery",     "eureka-server",         8761, 15),
-    ("Gateway",       "gateway",               8080,  5),
+    ("Discovery",     "zDiscovery",         8761, 15),
+    ("Gateway",       "zGateway",               8111,  5),
     ("Neighborhoods", "neighborhood",  8387,  5),
     ("Venues",        "venue",         8386,  5),
     ("Events",        "event",         8389,  5),

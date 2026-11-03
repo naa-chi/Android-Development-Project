@@ -15,7 +15,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/neighborhoods")
+@RequestMapping("/api/v1/neighborhood")
 @RequiredArgsConstructor
 public class NeighborhoodController {
 

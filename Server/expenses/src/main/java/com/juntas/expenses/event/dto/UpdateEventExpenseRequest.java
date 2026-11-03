@@ -19,5 +19,7 @@ public record UpdateEventExpenseRequest(
         @Size(max = 120)
         String forEmail,
 
-        Long neighborhoodId
+        Long neighborhoodId,
+
+        Long eventId
 ) {}

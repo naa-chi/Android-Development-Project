@@ -28,7 +28,7 @@ public class AuthService {
         if (repo.existsByEmail(req.email())) {
             throw new EmailAlreadyExistsException("Email que ya esta registrado: " + req.email());
         }
-        if (repo.existsByRut(req.rut())) {
+        if (repo.existsByRutNumeric(req.rut())) {
             throw new EmailAlreadyExistsException("Rut que ya estra registrado: " + req.rut());
         }
 

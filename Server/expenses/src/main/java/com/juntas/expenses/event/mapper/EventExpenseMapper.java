@@ -27,6 +27,7 @@ public class EventExpenseMapper {
         e.setForUserId(req.forUserId());
         e.setForEmail(req.forEmail());
         e.setNeighborhoodId(req.neighborhoodId());
+        e.setEventId(req.eventId());
         return e;
     }
 
@@ -36,5 +37,6 @@ public class EventExpenseMapper {
         if (req.forUserId() != null) target.setForUserId(req.forUserId());
         if (req.forEmail() != null) target.setForEmail(req.forEmail());
         if (req.neighborhoodId() != null) target.setNeighborhoodId(req.neighborhoodId());
+        if (req.eventId() != null) target.setEventId(req.eventId());
     }
 }

@@ -22,5 +22,8 @@ public record CreateVenueRequest(
         int capacity,
 
         @NotNull(message = "El barrio es obligatorio")
-        Long neighbourhoodId
+        Long neighbourhoodId,
+
+        @Min(value = 1, message = "El tamaño debe ser al menos 1 m²")
+        Long venueSizeMSquared
 ) {} // Admittedly AI-Gen'd tests

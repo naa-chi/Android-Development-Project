@@ -11,7 +11,7 @@ import lombok.*;
 @Getter
 @Setter
 @Entity
-@Table(name = "utility_expense", schema = "JVDB_Expense")
+@Table(name = "event_expense", schema = "JVDB_Expense")
 public class EventExpenseModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

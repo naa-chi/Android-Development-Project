@@ -3,7 +3,7 @@ package com.juntas.expenses.event.service;
 import com.juntas.expenses.event.dto.CreateEventExpenseRequest;
 import com.juntas.expenses.event.dto.EventExpenseResponse;
 import com.juntas.expenses.event.dto.UpdateEventExpenseRequest;
-import com.juntas.expenses.event.exception.EventExpenseNotFoundException;
+import com.juntas.expenses.exception.EventExpenseNotFoundException;
 import com.juntas.expenses.event.mapper.EventExpenseMapper;
 import com.juntas.expenses.event.model.EventExpenseModel;
 import com.juntas.expenses.event.repository.EventExpenseRepository;
