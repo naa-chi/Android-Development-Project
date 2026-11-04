@@ -1,0 +1,72 @@
+===== 2026-11-04 03:14:22 — C:\Users\nachi\Documents\GitHub\Android-Development-Project-main\Android-Development-Project-main\Server\venue\mvnw.cmd test -Dmaven.test.skip=false -DfailIfNoTests=false -Dtest=!*ApplicationTests =====
+[INFO] Scanning for projects...
+[INFO] Loaded 24359 auto-discovered prefixes for remote repository central (prefixes-central.txt)
+[INFO] 
+[INFO] --------------------------< com.juntas:venue >--------------------------
+[INFO] Building  0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] Loaded 64 auto-discovered prefixes for remote repository apache.snapshots (prefixes-apache.snapshots.txt)
+[INFO] 
+[INFO] --- resources:3.5.0:resources (default-resources) @ venue ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ venue ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.5.0:testResources (default-testResources) @ venue ---
+[INFO] skip non existing resourceDirectory C:\Users\nachi\Documents\GitHub\Android-Development-Project-main\Android-Development-Project-main\Server\venue\src\test\resources
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ venue ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.6:test (default-test) @ venue ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.juntas.venue.controller.VenueControllerTest
+03:14:33.941 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.juntas.venue.controller.VenueControllerTest]: VenueControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+03:14:34.254 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.juntas.venue.VenueApplication for test class com.juntas.venue.controller.VenueControllerTest
+03:14:34.258 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.juntas.venue.controller.VenueControllerTest]: VenueControllerTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+03:14:34.285 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.juntas.venue.VenueApplication for test class com.juntas.venue.controller.VenueControllerTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-11-04T03:14:35.462-03:00  INFO 9892 --- [venues] [           main] c.j.v.controller.VenueControllerTest     : Starting VenueControllerTest using Java 21.0.11 with PID 9892 (started by nachi in C:\Users\nachi\Documents\GitHub\Android-Development-Project-main\Android-Development-Project-main\Server\venue)
+2026-11-04T03:14:35.464-03:00  INFO 9892 --- [venues] [           main] c.j.v.controller.VenueControllerTest     : No active profile set, falling back to 1 default profile: "default"
+Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+WARNING: A Java agent has been loaded dynamically (C:\Users\nachi\.m2\repository\net\bytebuddy\byte-buddy-agent\1.18.11\byte-buddy-agent-1.18.11.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+Java HotSpot(TM) 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+2026-11-04T03:14:40.802-03:00  INFO 9892 --- [venues] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-11-04T03:14:40.803-03:00  INFO 9892 --- [venues] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-11-04T03:14:40.812-03:00  INFO 9892 --- [venues] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 7 ms
+2026-11-04T03:14:40.928-03:00  INFO 9892 --- [venues] [           main] c.j.v.controller.VenueControllerTest     : Started VenueControllerTest in 6.234 seconds (process running for 8.842)
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 8.497 s -- in com.juntas.venue.controller.VenueControllerTest
+[INFO] Running com.juntas.venue.service.VenueServiceTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.623 s -- in com.juntas.venue.service.VenueServiceTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 12, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  16.805 s
+[INFO] Finished at: 2026-11-04T03:14:42-03:00
+[INFO] ------------------------------------------------------------------------
+
+===== exit code: 0 =====

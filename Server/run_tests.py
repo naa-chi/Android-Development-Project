@@ -1,12 +1,12 @@
-#!/usr/bin/env python3
 """
 run_tests.py — runs `./mvnw test` for every microservice, captures output,
 and writes a detailed log per service plus a summary.
 
 Usage:
+    python run_tests.py                      # auto-detects Server/
     python run_tests.py --root ./Server
-    python run_tests.py --root ./Server --services event users
-    python run_tests.py --root ./Server --fail-fast
+    python run_tests.py --services event users
+    python run_tests.py --fail-fast
 """
 
 from __future__ import annotations
@@ -22,14 +22,28 @@ from pathlib import Path
 # ---------------------------------------------------------------------------
 
 SERVICES = [
-    ("event", "event"),
-    ("expenses", "expenses"),
+    ("event",        "event"),
+    ("expenses",     "expenses"),
     ("neighborhood", "neighborhood"),
-    ("users", "users"),
-    ("venue", "venue"),
-    ("zGateway", "gateway"),
-    ("zDiscovery", "discovery"),
+    ("users",        "users"),
+    ("venue",        "venue"),
 ]
+
+_SERVER_MARKERS = ("event", "expenses", "neighborhood", "users", "venue")
+
+
+def _find_server_root(start: Path) -> Path | None:
+    """Walk a few likely places looking for the Server/ directory."""
+    candidates = [
+        start,
+        start / "Server",
+        start.parent,
+        start.parent / "Server",
+    ]
+    for c in candidates:
+        if c.is_dir() and all((c / m).is_dir() for m in _SERVER_MARKERS):
+            return c
+    return None
 
 
 # ---------------------------------------------------------------------------
@@ -56,7 +70,6 @@ def maven_wrapper(service_dir: Path) -> list[str]:
 def run_maven_test(service_dir: Path, log_file: Path) -> int:
     """Runs `./mvnw test` in service_dir, writes stdout+stderr to log_file, returns exit code."""
     base = maven_wrapper(service_dir)
-    # Exclude context-load tests (they need a live MySQL).
     cmd = base + [
         "test",
         "-Dmaven.test.skip=false",
@@ -96,10 +109,10 @@ def parse_surefire_reports(service_dir: Path) -> dict:
             content,
         )
         if m:
-            summary["tests"] += int(m.group(1))
+            summary["tests"]    += int(m.group(1))
             summary["failures"] += int(m.group(2))
-            summary["errors"] += int(m.group(3))
-            summary["skipped"] += int(m.group(4))
+            summary["errors"]   += int(m.group(3))
+            summary["skipped"]  += int(m.group(4))
     return summary
 
 
@@ -115,13 +128,33 @@ def print_header(title: str) -> None:
 
 def main() -> int:
     ap = argparse.ArgumentParser(description="Run Maven tests for all microservices")
-    ap.add_argument("--root", required=True, help="Path to Server/ directory")
+    ap.add_argument("--root", default=None,
+                    help="Path to Server/ (default: auto-detect from this script)")
     ap.add_argument("--services", nargs="*", help="Limit to specific service dirs")
     ap.add_argument("--fail-fast", action="store_true", help="Stop at first failure")
     ap.add_argument("--log-dir", default="logs/test-reports", help="Where to write logs")
     args = ap.parse_args()
 
-    root = Path(args.root).resolve()
+    if args.root:
+        root = Path(args.root).resolve()
+        if not root.is_dir():
+            print(f"error: {root} is not a directory", file=sys.stderr)
+            return 2
+    else:
+        detected = _find_server_root(Path(__file__).resolve().parent)
+        if detected is None:
+            print(
+                "error: could not auto-detect the Server/ folder.\n"
+                f"       Tried: {Path(__file__).resolve().parent}, "
+                f"{Path(__file__).resolve().parent / 'Server'}, "
+                f"{Path(__file__).resolve().parent.parent}, "
+                f"{Path(__file__).resolve().parent.parent / 'Server'}\n"
+                "       Pass --root PATH to override.",
+                file=sys.stderr,
+            )
+            return 2
+        root = detected
+
     log_dir = root / args.log_dir
     log_dir.mkdir(parents=True, exist_ok=True)
 
@@ -168,7 +201,6 @@ def main() -> int:
                 print("⚠  --fail-fast enabled, stopping.")
                 break
 
-    # Summary
     print_header("Test Summary")
     total_tests = sum(r["report"]["tests"] for r in results)
     total_fail = sum(r["report"]["failures"] + r["report"]["errors"] for r in results)

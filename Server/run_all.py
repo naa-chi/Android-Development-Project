@@ -1,14 +1,15 @@
-#!/usr/bin/env python3
 """
 Start all Juntas Vecinos microservices in order.
 Loads .env from the project root and passes its variables to each service.
 
 Usage:
-    python run_all.py
+    python run_all.py        # auto-detects Server/ folder
+    python run_all.py --root D:\\path\\to\\Server
 
 Press Ctrl+C to stop everything.
 """
 
+import argparse
 import os
 import re
 import socket
@@ -20,19 +21,16 @@ from pathlib import Path
 
 # ─── CONFIG ──────────────────────────────────────────────────────────
 SCRIPT_DIR = Path(__file__).resolve().parent
-BASE_DIR = SCRIPT_DIR
-LOG_DIR = SCRIPT_DIR / "logs"
-ENV_FILE = SCRIPT_DIR / ".env"
 
 # (display name, directory name, port, grace seconds after port opens)
 SERVICES = [
-    ("Discovery",     "zDiscovery",         8761, 15),
-    ("Gateway",       "zGateway",               8111,  5),
+    ("Discovery",     "zDiscovery",    8761, 15),
+    ("Gateway",       "zGateway",      8111,  5),
     ("Neighborhoods", "neighborhood",  8387,  5),
     ("Venues",        "venue",         8386,  5),
     ("Events",        "event",         8389,  5),
-    ("Expenses",      "expenses",       8390,  5),
-    ("Users",         "users",          8391,  5),
+    ("Expenses",      "expenses",      8390,  5),
+    ("Users",         "users",         8391,  5),
 ]
 
 PORT_OPEN_TIMEOUT = 90
@@ -41,6 +39,23 @@ TAIL_LINES_ON_FAILURE = 100
 
 IS_WINDOWS = sys.platform == "win32"
 MVN = "mvnw.cmd" if IS_WINDOWS else "./mvnw"
+
+# Folders every Server/ root must contain (used to auto-detect it).
+_SERVER_MARKERS = ("event", "expenses", "neighborhood", "users", "venue")
+
+
+def _find_server_root(start: Path) -> Path | None:
+    """Walk a few likely places looking for the Server/ directory."""
+    candidates = [
+        start,
+        start / "Server",
+        start.parent,
+        start.parent / "Server",
+    ]
+    for c in candidates:
+        if c.is_dir() and all((c / m).is_dir() for m in _SERVER_MARKERS):
+            return c
+    return None
 
 
 # ─── Utilities ───────────────────────────────────────────────────────
@@ -110,24 +125,14 @@ def scan_log_for_markers(path: Path) -> dict:
     return markers
 
 
-# ─── .env loader ─────────────────────────────────────────────────────
-
-def load_env() -> None:
-    """Read .env from the project root and set each key in os.environ.
-
-    Lines like `JWT_SECRET=abc123` become environment variables for this
-    process, which subprocess.Popen children inherit.
-    Supports:
-      - blank lines and #comments
-      - `export KEY=value` prefix
-      - optional quotes around values
-    """
-    if not ENV_FILE.exists():
-        log(f"No .env at {ENV_FILE} — using inherited environment only.", indent=1)
+def load_env(env_file: Path) -> None:
+    """Read .env from the project root and set each key in os.environ."""
+    if not env_file.exists():
+        log(f"No .env at {env_file} — using inherited environment only.", indent=1)
         return
 
     loaded = []
-    for raw in ENV_FILE.read_text(encoding="utf-8").splitlines():
+    for raw in env_file.read_text(encoding="utf-8").splitlines():
         line = raw.strip()
         if not line or line.startswith("#"):
             continue
@@ -151,10 +156,9 @@ def load_env() -> None:
 
 # ─── Preflight ───────────────────────────────────────────────────────
 
-def preflight() -> list[str]:
+def preflight(base_dir: Path, env_file: Path) -> list[str]:
     warnings = []
 
-    # Java
     try:
         r = subprocess.run(["java", "-version"], capture_output=True, text=True)
         out = (r.stderr or "") + (r.stdout or "")
@@ -164,13 +168,11 @@ def preflight() -> list[str]:
         warnings.append("`java` not found on PATH. Spring Boot services won't start.")
         log("! java not found on PATH", indent=1)
 
-    # .env presence
-    if ENV_FILE.exists():
-        log(f".env found at {ENV_FILE}")
+    if env_file.exists():
+        log(f".env found at {env_file}")
     else:
-        log(f"! .env missing at {ENV_FILE} — JWT_SECRET may be undefined", indent=1)
+        log(f"! .env missing at {env_file} — JWT_SECRET may be undefined", indent=1)
 
-    # JWT_SECRET
     if "JWT_SECRET" not in os.environ:
         warnings.append(
             "JWT_SECRET not set (neither in .env nor in the shell environment). "
@@ -180,15 +182,8 @@ def preflight() -> list[str]:
     else:
         log(f"JWT_SECRET: set ({len(os.environ['JWT_SECRET'])} chars)")
 
-    # Base directory
-    if not BASE_DIR.exists():
-        warnings.append(f"BASE_DIR does not exist: {BASE_DIR}")
-        log(f"! BASE_DIR missing: {BASE_DIR}", indent=1)
-        return warnings
-
-    # Each service directory + maven wrapper
     for name, directory, port, _ in SERVICES:
-        d = BASE_DIR / directory
+        d = base_dir / directory
         if not d.exists():
             warnings.append(f"{name}: directory missing ({d})")
             log(f"! {name}: directory missing: {d}", indent=1)
@@ -197,7 +192,6 @@ def preflight() -> list[str]:
             warnings.append(f"{name}: no maven wrapper in {d} (expected {MVN} or mvnw)")
             log(f"! {name}: no maven wrapper in {d}", indent=1)
 
-    # Ports
     for name, _, port, _ in SERVICES:
         if not port_is_free(port):
             warnings.append(
@@ -211,14 +205,14 @@ def preflight() -> list[str]:
 
 # ─── Launching and waiting ───────────────────────────────────────────
 
-def launch(name: str, directory: str, port: int, grace: int,
-           procs: list, log_handles: list) -> bool:
-    d = BASE_DIR / directory
+def launch(name: str, base_dir: Path, log_dir: Path, directory: str, port: int,
+           grace: int, procs: list, log_handles: list) -> bool:
+    d = base_dir / directory
     if not d.exists():
         log(f"SKIP  {name} — {d} not found", indent=1)
         return False
 
-    log_path = LOG_DIR / f"{name.lower()}.log"
+    log_path = log_dir / f"{name.lower()}.log"
     fh = log_path.open("w", encoding="utf-8", errors="replace")
     fh.write(f"===== {name} — started {datetime.now().isoformat()} =====\n")
     fh.flush()
@@ -230,7 +224,7 @@ def launch(name: str, directory: str, port: int, grace: int,
         "shell": True,
         "stdout": fh,
         "stderr": subprocess.STDOUT,
-        "env": os.environ.copy(),   # inherit + our .env values
+        "env": os.environ.copy(),
     }
     if IS_WINDOWS:
         kwargs["creationflags"] = subprocess.CREATE_NEW_PROCESS_GROUP
@@ -258,8 +252,8 @@ def launch(name: str, directory: str, port: int, grace: int,
 
 # ─── Diagnostics ─────────────────────────────────────────────────────
 
-def print_failure_report(failed_name: str, procs: list,
-                         env_warnings: list) -> None:
+def print_failure_report(failed_name: str, procs: list, env_warnings: list,
+                         base_dir: Path, log_dir: Path, env_file: Path) -> None:
     bar = "=" * 72
     print(f"\n{bar}")
     print(f"FAILURE REPORT — {failed_name}")
@@ -269,9 +263,9 @@ def print_failure_report(failed_name: str, procs: list,
     print("\n--- Environment ---")
     print(f"  OS:          {sys.platform}")
     print(f"  Python:      {sys.version.split()[0]}")
-    print(f"  BASE_DIR:    {BASE_DIR}")
-    print(f"  LOG_DIR:     {LOG_DIR}")
-    print(f"  .env:        {ENV_FILE} (exists: {ENV_FILE.exists()})")
+    print(f"  BASE_DIR:    {base_dir}")
+    print(f"  LOG_DIR:     {log_dir}")
+    print(f"  .env:        {env_file} (exists: {env_file.exists()})")
     if "JWT_SECRET" in os.environ:
         print(f"  JWT_SECRET:  set ({len(os.environ['JWT_SECRET'])} chars)")
     else:
@@ -328,7 +322,7 @@ def print_failure_report(failed_name: str, procs: list,
 
 # ─── Shutdown ────────────────────────────────────────────────────────
 
-def shutdown(procs: list, log_handles: list) -> None:
+def shutdown(procs: list, log_handles: list, log_dir: Path) -> None:
     print()
     log("Shutting down all services...")
     for entry in procs:
@@ -365,24 +359,47 @@ def shutdown(procs: list, log_handles: list) -> None:
             pass
 
     log("All services stopped.")
-    log(f"Per-service logs kept in: {LOG_DIR}")
+    log(f"Per-service logs kept in: {log_dir}")
 
 
 # ─── Main ────────────────────────────────────────────────────────────
 
 def main() -> None:
-    LOG_DIR.mkdir(parents=True, exist_ok=True)
+    ap = argparse.ArgumentParser(description="Start all Juntas Vecinos microservices")
+    ap.add_argument("--root", default=None,
+                    help="Path to Server/ (default: auto-detect from this script)")
+    args = ap.parse_args()
+
+    if args.root:
+        base_dir = Path(args.root).resolve()
+        if not base_dir.is_dir():
+            print(f"error: {base_dir} is not a directory", file=sys.stderr)
+            sys.exit(2)
+    else:
+        detected = _find_server_root(SCRIPT_DIR)
+        if detected is None:
+            print("error: could not auto-detect Server/ folder.\n"
+                  f"       Tried: {SCRIPT_DIR}, {SCRIPT_DIR / 'Server'}, "
+                  f"{SCRIPT_DIR.parent}, {SCRIPT_DIR.parent / 'Server'}\n"
+                  "       Pass --root PATH to override.", file=sys.stderr)
+            sys.exit(2)
+        base_dir = detected
+
+    log_dir = base_dir / "logs"
+    env_file = base_dir / ".env"
+    log_dir.mkdir(parents=True, exist_ok=True)
 
     print("=" * 72)
     print(f"Juntas Vecinos — backend launcher — {datetime.now().isoformat()}")
+    print(f"Server root: {base_dir}")
     print("=" * 72)
 
     log("Loading .env...")
-    load_env()
+    load_env(env_file)
     print()
 
     log("Preflight checks...")
-    warnings = preflight()
+    warnings = preflight(base_dir, env_file)
     if warnings:
         log(f"{len(warnings)} warning(s) — see above. Continuing anyway.", indent=1)
     else:
@@ -395,17 +412,17 @@ def main() -> None:
     try:
         for name, directory, port, grace in SERVICES:
             print(f"───── {name} ─────")
-            ok = launch(name, directory, port, grace, procs, log_handles)
+            ok = launch(name, base_dir, log_dir, directory, port, grace, procs, log_handles)
             if not ok:
-                print_failure_report(name, procs, warnings)
+                print_failure_report(name, procs, warnings, base_dir, log_dir, env_file)
                 log("Aborting — stopping services already started.")
-                shutdown(procs, log_handles)
+                shutdown(procs, log_handles, log_dir)
                 sys.exit(1)
             print()
 
         print("=" * 72)
         print("All services started successfully.")
-        print(f"  Per-service logs: {LOG_DIR}")
+        print(f"  Per-service logs: {log_dir}")
         print("  Press Ctrl+C to stop everything.")
         print()
 
@@ -413,7 +430,7 @@ def main() -> None:
             time.sleep(1)
 
     except KeyboardInterrupt:
-        shutdown(procs, log_handles)
+        shutdown(procs, log_handles, log_dir)
 
 
 if __name__ == "__main__":
