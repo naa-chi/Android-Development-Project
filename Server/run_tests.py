@@ -132,7 +132,7 @@ def main() -> int:
                     help="Path to Server/ (default: auto-detect from this script)")
     ap.add_argument("--services", nargs="*", help="Limit to specific service dirs")
     ap.add_argument("--fail-fast", action="store_true", help="Stop at first failure")
-    ap.add_argument("--log-dir", default="logs/test-reports", help="Where to write logs")
+    ap.add_argument("--log-dir", default="zz_logs/test-reports", help="Where to write logs")
     args = ap.parse_args()
 
     if args.root:
